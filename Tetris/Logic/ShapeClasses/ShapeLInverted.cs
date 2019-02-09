@@ -2,13 +2,14 @@
 
 namespace Tetris.Logic.ShapeClasses
 {
-    internal class ShapeLInverted : Shape
+    public sealed class ShapeLInverted : Shape
     {
 
         #region Constructor
 
-        public ShapeLInverted(int row, int column, Game game) : base(row, column, game)
+        public ShapeLInverted(int row, int column) : base(row, column)
         {
+            Initialize();
         }
 
         #endregion Constructor

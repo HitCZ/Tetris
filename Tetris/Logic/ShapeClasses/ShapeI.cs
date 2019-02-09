@@ -2,12 +2,13 @@
 
 namespace Tetris.Logic.ShapeClasses
 {
-    internal class ShapeI : Shape
+    public sealed class ShapeI : Shape
     {
         #region Constructor
 
-        public ShapeI(int row, int column, Game game) : base(row, column, game)
+        public ShapeI(int row, int column) : base(row, column)
         {
+            Initialize();
         }
 
         #endregion Constructor 
@@ -50,7 +51,7 @@ namespace Tetris.Logic.ShapeClasses
         {
             RotationState = RotationState.RotatedOnce;
 
-            ComposedShape = new Block[4, 4]
+            ComposedShape = new[,]
             {
                 { Part1,      Part2,      Part3,      Part4},
                 { null,       null,       null,       null },

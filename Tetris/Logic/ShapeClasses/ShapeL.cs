@@ -2,14 +2,14 @@
 
 namespace Tetris.Logic.ShapeClasses
 {
-    internal class ShapeL : Shape
+    public sealed class ShapeL : Shape
     {
 
         #region Constructor
-
-
-        public ShapeL(int row, int column, Game game) : base(row, column, game)
+        
+        public ShapeL(int row, int column) : base(row, column)
         {
+            Initialize();
         }
 
         #endregion Constructor

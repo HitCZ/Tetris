@@ -2,13 +2,14 @@
 
 namespace Tetris.Logic.ShapeClasses
 {
-    class ShapeZ : Shape
+    public sealed class ShapeZ : Shape
     {
 
         #region Constructor
 
-        public ShapeZ(int row, int column, Game game) : base(row, column, game)
+        public ShapeZ(int row, int column) : base(row, column)
         {
+            Initialize();
         }
 
         #endregion Constructor

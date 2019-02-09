@@ -11,22 +11,16 @@ namespace Tetris.Logic.ShapeClasses
     /// </summary>
     public abstract class Shape
     {
-        #region Fields
-
-        private readonly Game gameInstance;
-
-        #endregion Fields
 
         #region Constructors
 
         /// <summary>
         /// Initializes reference to the main view and sets random color.
         /// </summary>
-        protected Shape(int row, int column, Game game)
+        protected Shape(int row, int column)
         {
             Row = row;
             Column = column;
-            gameInstance = game;
 
             ListOfParts = new List<Block>();
             Color = ColorProvider.GetRandomBrush();
@@ -34,13 +28,6 @@ namespace Tetris.Logic.ShapeClasses
             CreateParts(Color);
 
             ComposedShape = new Block[4, 4];
-
-            Initialize();
-        }
-
-        protected Shape(Game game)
-        {
-            gameInstance = game;
         }
 
         #endregion Constructors
@@ -153,16 +140,16 @@ namespace Tetris.Logic.ShapeClasses
             switch (state)
             {
                 case RotationState.Default:
-                    ChangeRotationToDefault();
-                    break;
-                case RotationState.RotatedOnce:
                     ChangeRotationToRotatedOnce();
                     break;
-                case RotationState.RotatedTwice:
+                case RotationState.RotatedOnce:
                     ChangeRotationToRotatedTwice();
                     break;
-                case RotationState.RotatedThreeTimes:
+                case RotationState.RotatedTwice:
                     ChangeRotationToRotatedThreeTimes();
+                    break;
+                case RotationState.RotatedThreeTimes:
+                    ChangeRotationToDefault();
                     break;
             }
         }
