@@ -1,4 +1,4 @@
-﻿namespace Tetris.Classes.Enums
+﻿namespace Tetris.Logic.Enums
 {
     /// <summary>
     /// Represents colors for the shapes.

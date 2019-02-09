@@ -4,8 +4,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Tetris.ShapeClasses;
-using Orientation = Tetris.Classes.Enums.Orientation;
+using Tetris.Logic.Enums;
+using Tetris.Logic.ShapeClasses;
+using Orientation = Tetris.Logic.Enums.Orientation;
 
 namespace Tetris
 {

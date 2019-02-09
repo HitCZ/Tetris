@@ -55,25 +55,26 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Classes\Enums\Orientation.cs" />
-    <Compile Include="Classes\Enums\RotationState.cs" />
-    <Compile Include="Classes\Enums\ShapeType.cs" />
-    <Compile Include="Classes\FileReader.cs" />
-    <Compile Include="Classes\FileWriter.cs" />
-    <Compile Include="Classes\MenuManager.cs" />
+    <Compile Include="Logic\Enums\Orientation.cs" />
+    <Compile Include="Logic\Enums\RotationState.cs" />
+    <Compile Include="Logic\Enums\ShapeType.cs" />
+    <Compile Include="Logic\FileReader.cs" />
+    <Compile Include="Logic\FileWriter.cs" />
+    <Compile Include="Logic\MenuManager.cs" />
+    <Compile Include="Logic\Providers\ColorProvider.cs" />
     <Compile Include="NamingWindow.xaml.cs">
       <DependentUpon>NamingWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="PauseMenu.xaml.cs">
       <DependentUpon>PauseMenu.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Classes\Record.cs" />
-    <Compile Include="Classes\ShapeClasses\ShapeI.cs" />
-    <Compile Include="Classes\ShapeClasses\ShapeL.cs" />
-    <Compile Include="Classes\ShapeClasses\ShapeLInverted.cs" />
-    <Compile Include="Classes\ShapeClasses\ShapeZ.cs" />
-    <Compile Include="Classes\ShapeClasses\ShapeT.cs" />
-    <Compile Include="Classes\ShapeClasses\ShapeS.cs" />
+    <Compile Include="Logic\Record.cs" />
+    <Compile Include="Logic\ShapeClasses\ShapeI.cs" />
+    <Compile Include="Logic\ShapeClasses\ShapeL.cs" />
+    <Compile Include="Logic\ShapeClasses\ShapeLInverted.cs" />
+    <Compile Include="Logic\ShapeClasses\ShapeZ.cs" />
+    <Compile Include="Logic\ShapeClasses\ShapeT.cs" />
+    <Compile Include="Logic\ShapeClasses\ShapeS.cs" />
     <Compile Include="MainMenu.xaml.cs">
       <DependentUpon>MainMenu.xaml</DependentUpon>
     </Compile>
@@ -88,11 +89,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Classes\ShapeClasses\Shape.cs" />
-    <Compile Include="Classes\Block.cs" />
-    <Compile Include="Classes\Enums\Color.cs" />
-    <Compile Include="Classes\Game.cs" />
-    <Compile Include="Classes\ImportantValues.cs" />
+    <Compile Include="Logic\ShapeClasses\Shape.cs" />
+    <Compile Include="Logic\Block.cs" />
+    <Compile Include="Logic\Enums\Color.cs" />
+    <Compile Include="Logic\Game.cs" />
+    <Compile Include="Logic\ImportantValues.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -115,7 +116,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\ShapeClasses\ShapeO.cs" />
+    <Compile Include="Logic\ShapeClasses\ShapeO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -150,6 +151,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Graphics\Tetris_background_blur.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="Views\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

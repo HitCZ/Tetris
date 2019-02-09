@@ -1,4 +1,4 @@
-﻿namespace Tetris
+﻿namespace Tetris.Logic.Enums
 {
     /// <summary>
     /// Represents information about the number of rotations.
