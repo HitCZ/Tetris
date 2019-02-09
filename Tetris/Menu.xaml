@@ -1,0 +1,43 @@
+﻿<Window x:Class="Tetris.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tetris"
+        mc:Ignorable="d"
+        Title="Tetris" Height="347.034" Width="528.814"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <StackPanel HorizontalAlignment="Center" Height="179" Margin="115,94,115,43" VerticalAlignment="Center" Width="291">
+            <TextBlock 
+                x:Name="startTextBlock" 
+                Text="START" 
+                FontFamily="Agency FB"
+                FontSize="40" 
+                HorizontalAlignment="Center" 
+                MouseEnter="startTextBlockMouseEnter" 
+                MouseLeave="startTextBlock_MouseLeave" 
+                MouseLeftButtonDown="startTextBlock_MouseLeftButtonDown"/>
+
+            <TextBlock 
+                x:Name="scoreTextBlock" 
+                Text="SCORE TABLE" 
+                FontFamily="Agency FB"
+                FontSize="40" 
+                HorizontalAlignment="Center" 
+                MouseEnter="scoreTextBlock_MouseEnter" 
+                MouseLeave="scoreTextBlock_MouseLeave" 
+                MouseLeftButtonDown="scoreTextBlock_MouseLeftButtonDown"/>
+
+            <TextBlock 
+                x:Name="exitTextBlock" 
+                Text="EXIT" 
+                FontFamily="Agency FB"
+                FontSize="40" 
+                HorizontalAlignment="Center" 
+                MouseEnter="exitTextBlock_MouseEnter" 
+                MouseLeftButtonDown="exitTextBlock_MouseLeftButtonDown" 
+                MouseLeave="exitTextBlock_MouseLeave"/>
+        </StackPanel>
+    </Grid>
+</Window>

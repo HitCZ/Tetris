@@ -1,0 +1,51 @@
+﻿<Window x:Class="Tetris.PauseMenu"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tetris"
+        mc:Ignorable="d"
+        Title="Tetris" Height="347.034" Width="528.814"
+        WindowStartupLocation="CenterScreen"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        BorderThickness="1"
+        Background="#38bcfd"
+        BorderBrush="Black">
+
+    <Grid>
+        <StackPanel HorizontalAlignment="Center" Height="187" Margin="0" VerticalAlignment="Center" Width="291">
+            <TextBlock 
+                x:Name="resumeTextBlock" 
+                Text="POKRACOVAT" 
+                FontFamily="Agency FB"
+                FontSize="40" 
+                Foreground="Black"
+                HorizontalAlignment="Center"/>
+
+            <TextBlock 
+                x:Name="restartTextBlock" 
+                Text="RESTART" 
+                FontFamily="Agency FB"
+                FontSize="40" 
+                Foreground="Black"
+                HorizontalAlignment="Center"/>
+
+            <TextBlock 
+                x:Name="scoreTextBlock" 
+                Text="TABULKA SKORE" 
+                FontFamily="Agency FB"
+                FontSize="40" 
+                Foreground="Black"
+                HorizontalAlignment="Center"/>
+
+            <TextBlock 
+                x:Name="exitTextBlock" 
+                Text="KONEC" 
+                FontFamily="Agency FB"
+                FontSize="40" 
+                Foreground="Black"
+                HorizontalAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+</Window>

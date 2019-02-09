@@ -1,0 +1,9 @@
+Zelena - #08ff4e
+Cervena - #ff0000
+Zluta - #f9e400
+Ruzova- #ee2bff
+Modra - #00d2ff
+Tmave modra - #1c37ff
+Bila - #ffffff
+Oranzova - #ff9600
+Fialova - #9740c9

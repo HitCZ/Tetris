@@ -1,0 +1,171 @@
+﻿<Window x:Class="Tetris.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tetris"
+        mc:Ignorable="d"
+        Title="Tetris" 
+        Height="720" 
+        Width="1280" 
+        ResizeMode="CanMinimize" 
+        HorizontalAlignment="Center" 
+        VerticalAlignment="Center"
+        WindowStartupLocation="CenterScreen" Closed="Window_Closed">
+
+
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="Graphics/Tetris_background_blur.jpg" />
+        </Grid.Background>
+
+        <Border 
+            BorderBrush="Black"
+            BorderThickness="0"
+            Width="410">
+
+            <Grid
+                Name="gameGrid"
+                Margin="0,-244,5,0" 
+                Grid.IsSharedSizeScope="True" 
+                ShowGridLines="False">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40" SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                    <RowDefinition SharedSizeGroup="A"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="A"/>
+                    <ColumnDefinition SharedSizeGroup="A"/>
+                    <ColumnDefinition SharedSizeGroup="A"/>
+                    <ColumnDefinition SharedSizeGroup="A"/>
+                    <ColumnDefinition SharedSizeGroup="A"/>
+                    <ColumnDefinition SharedSizeGroup="A"/>
+                    <ColumnDefinition SharedSizeGroup="A"/>
+                    <ColumnDefinition SharedSizeGroup="A"/>
+                    <ColumnDefinition SharedSizeGroup="A"/>
+                    <ColumnDefinition SharedSizeGroup="A"/>
+                </Grid.ColumnDefinitions>
+            </Grid>
+        </Border>
+
+        <TextBlock 
+            Text="SKORE: "
+            FontSize="50" 
+            FontFamily="Agency FB"
+            Foreground="white" 
+            Margin="902,0,250,0"
+            >
+            <TextBlock.Effect>
+                <DropShadowEffect/>
+            </TextBlock.Effect>
+        </TextBlock>
+        <TextBlock 
+            Name="txtScoreValue"
+            FontFamily="Agency FB" 
+            FontSize="50"
+            Foreground="White"
+            Margin="1030, 0, 0, 0"
+            Text="{Binding Score}"
+            >
+
+            <TextBlock.Effect>
+                <DropShadowEffect/>
+            </TextBlock.Effect>
+        </TextBlock>
+
+        <TextBlock 
+            Foreground="White"
+            FontSize="15" 
+            FontFamily="MV Boli"
+            Margin="20, 10, 0, 0"
+        >
+            <TextBlock.Effect>
+                <DropShadowEffect/>
+            </TextBlock.Effect><Run Text="(c) Lukáš Bubník 2016"/></TextBlock>
+        <TextBlock 
+            Text="Další objekt: "
+            FontSize="25" 
+            FontFamily="Agency FB"
+            Foreground="white" 
+            Margin="902,144,250,-45"
+            >
+            <TextBlock.Effect>
+                <DropShadowEffect/>
+            </TextBlock.Effect>
+        </TextBlock>
+
+        <Grid 
+            Name="gridNextShape"
+            Grid.IsSharedSizeScope="True" 
+            Margin="900, 0, 0, 150"
+            ShowGridLines="False"
+            Width="160"
+            Height="160">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" SharedSizeGroup="A" />
+                <RowDefinition SharedSizeGroup="A" />
+                <RowDefinition SharedSizeGroup="A" />
+                <RowDefinition SharedSizeGroup="A" />
+                <RowDefinition SharedSizeGroup="A" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="A" />
+                <ColumnDefinition SharedSizeGroup="A" />
+                <ColumnDefinition SharedSizeGroup="A" />
+                <ColumnDefinition SharedSizeGroup="A" />
+            </Grid.ColumnDefinitions>
+        </Grid>
+
+        <TextBlock 
+            Text="Level: "
+            FontSize="50" 
+            FontFamily="Agency FB"
+            Foreground="white" 
+            Margin="902,60,250,-61"
+            >
+            <TextBlock.Effect>
+                <DropShadowEffect/>
+            </TextBlock.Effect>
+        </TextBlock>
+
+        <TextBlock 
+            Name="txtLevelValue"
+            FontFamily="Agency FB" 
+            FontSize="50"
+            Foreground="White"
+            Text="{Binding Level}"
+            Margin="1007,60,23,-61"
+            >
+
+            <TextBlock.Effect>
+                <DropShadowEffect/>
+            </TextBlock.Effect>
+        </TextBlock>
+
+    </Grid>
+</Window>
