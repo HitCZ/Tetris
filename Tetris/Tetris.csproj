@@ -55,6 +55,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Logic\Constants\StringConstants.cs" />
+    <Compile Include="Logic\Converters\DocumentToRecordsConverter.cs" />
     <Compile Include="Logic\Enums\Orientation.cs" />
     <Compile Include="Logic\Enums\RotationState.cs" />
     <Compile Include="Logic\Enums\ShapeType.cs" />
@@ -81,9 +83,11 @@
     <Compile Include="MainMenu.xaml.cs">
       <DependentUpon>MainMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ScoreBoard.xaml.cs">
       <DependentUpon>ScoreBoard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\ScoreBoardViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -156,7 +160,6 @@
     <Resource Include="Graphics\Tetris_background_blur.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ViewModels\" />
     <Folder Include="Views\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
