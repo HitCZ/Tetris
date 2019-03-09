@@ -62,6 +62,9 @@
     <Compile Include="Logic\FileWriter.cs" />
     <Compile Include="Logic\MenuManager.cs" />
     <Compile Include="Logic\Providers\ColorProvider.cs" />
+    <Compile Include="Logic\Providers\ShapeProvider.cs" />
+    <Compile Include="Logic\RelayCommand.cs" />
+    <Compile Include="Logic\ShapeFactory.cs" />
     <Compile Include="NamingWindow.xaml.cs">
       <DependentUpon>NamingWindow.xaml</DependentUpon>
     </Compile>
@@ -69,12 +72,12 @@
       <DependentUpon>PauseMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="Logic\Record.cs" />
-    <Compile Include="Logic\ShapeClasses\ShapeI.cs" />
-    <Compile Include="Logic\ShapeClasses\ShapeL.cs" />
-    <Compile Include="Logic\ShapeClasses\ShapeLInverted.cs" />
-    <Compile Include="Logic\ShapeClasses\ShapeZ.cs" />
-    <Compile Include="Logic\ShapeClasses\ShapeT.cs" />
-    <Compile Include="Logic\ShapeClasses\ShapeS.cs" />
+    <Compile Include="Models\Shapes\ShapeI.cs" />
+    <Compile Include="Models\Shapes\ShapeL.cs" />
+    <Compile Include="Models\Shapes\ShapeLInverted.cs" />
+    <Compile Include="Models\Shapes\ShapeZ.cs" />
+    <Compile Include="Models\Shapes\ShapeT.cs" />
+    <Compile Include="Models\Shapes\ShapeS.cs" />
     <Compile Include="MainMenu.xaml.cs">
       <DependentUpon>MainMenu.xaml</DependentUpon>
     </Compile>
@@ -89,8 +92,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Logic\ShapeClasses\Shape.cs" />
-    <Compile Include="Logic\Block.cs" />
+    <Compile Include="Models\Shapes\Shape.cs" />
+    <Compile Include="Models\Block.cs" />
     <Compile Include="Logic\Enums\Color.cs" />
     <Compile Include="Logic\Game.cs" />
     <Compile Include="Logic\ImportantValues.cs" />
@@ -116,7 +119,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Logic\ShapeClasses\ShapeO.cs" />
+    <Compile Include="Models\Shapes\ShapeO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -153,7 +156,6 @@
     <Resource Include="Graphics\Tetris_background_blur.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="ViewModels\" />
     <Folder Include="Views\" />
   </ItemGroup>

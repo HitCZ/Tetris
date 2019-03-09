@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace Tetris {
+namespace Tetris.Models {
     /// <summary>
     /// Trida reprezentuje jednotlive bloky, ze kterych se skladaji jednotlive
     /// tvary ve hre. Kazdy blok je tvoren ctyruhelnikem, ktery je obsazen v 

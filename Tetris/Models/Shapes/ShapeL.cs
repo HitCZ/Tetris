@@ -1,6 +1,6 @@
 ﻿using Tetris.Logic.Enums;
 
-namespace Tetris.Logic.ShapeClasses
+namespace Tetris.Models.Shapes
 {
     public sealed class ShapeL : Shape
     {

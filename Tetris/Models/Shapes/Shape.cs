@@ -4,7 +4,7 @@ using System.Windows.Media;
 using Tetris.Logic.Enums;
 using Tetris.Logic.Providers;
 
-namespace Tetris.Logic.ShapeClasses
+namespace Tetris.Models.Shapes
 {
     /// <summary>
     /// Represents template for Tetris shapes.
