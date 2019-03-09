@@ -201,7 +201,7 @@ namespace Tetris
         /// Odstartuje hru
         /// </summary>
         private void Start() {
-            NaminWindowg naming = new NaminWindowg();
+            Views.NamingView naming = new Views.NamingView();
             naming.Show();
             /*
             MainWindow main = new MainWindow();

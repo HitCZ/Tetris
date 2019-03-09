@@ -12,39 +12,48 @@
         Background="{StaticResource BlueBackgroundBrush}"
         BorderBrush="Black">
 
-    <Grid>
-        <StackPanel HorizontalAlignment="Center" Height="187" Margin="0" VerticalAlignment="Center" Width="291">
-            <TextBlock 
-                x:Name="resumeTextBlock" 
-                Text="POKRACOVAT" 
-                FontFamily="Agency FB"
-                FontSize="40" 
-                Foreground="Black"
-                HorizontalAlignment="Center"/>
+    <Grid VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-            <TextBlock 
-                x:Name="restartTextBlock" 
-                Text="RESTART" 
-                FontFamily="Agency FB"
-                FontSize="40" 
-                Foreground="Black"
-                HorizontalAlignment="Center"/>
+        <TextBlock 
+            Grid.Row="0"
+            x:Name="ResumeTextBlock" 
+            Text="POKRACOVAT" 
+            FontFamily="Agency FB"
+            FontSize="40" 
+            Foreground="Black"
+            HorizontalAlignment="Center"/>
 
-            <TextBlock 
-                x:Name="scoreTextBlock" 
-                Text="TABULKA SKORE" 
-                FontFamily="Agency FB"
-                FontSize="40" 
-                Foreground="Black"
-                HorizontalAlignment="Center"/>
+        <TextBlock 
+            Grid.Row="1"
+            x:Name="RestartTextBlock" 
+            Text="RESTART" 
+            FontFamily="Agency FB"
+            FontSize="40" 
+            Foreground="Black"
+            HorizontalAlignment="Center"/>
 
-            <TextBlock 
-                x:Name="exitTextBlock" 
-                Text="KONEC" 
-                FontFamily="Agency FB"
-                FontSize="40" 
-                Foreground="Black"
-                HorizontalAlignment="Center"/>
-        </StackPanel>
+        <TextBlock 
+             Grid.Row="2"
+             x:Name="ScoreTextBlock" 
+             Text="TABULKA SKORE" 
+             FontFamily="Agency FB"
+             FontSize="40" 
+             Foreground="Black"
+             HorizontalAlignment="Center"/>
+
+        <TextBlock 
+             Grid.Row="3"
+             x:Name="ExitTextBlock" 
+             Text="KONEC" 
+             FontFamily="Agency FB"
+             FontSize="40" 
+             Foreground="Black"
+             HorizontalAlignment="Center"/>
     </Grid>
 </Window>

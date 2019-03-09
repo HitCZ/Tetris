@@ -25,10 +25,10 @@ namespace Tetris.Views
             InitializeComponent();
 
             var menuItems = new[] {
-                resumeTextBlock,
-                restartTextBlock,
-                scoreTextBlock,
-                exitTextBlock
+                ResumeTextBlock,
+                RestartTextBlock,
+                ScoreTextBlock,
+                ExitTextBlock
             };
 
             ViewModel = new PauseMenuViewModel(this, gameInstance, menuItems);

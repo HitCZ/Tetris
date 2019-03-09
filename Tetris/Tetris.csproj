@@ -60,6 +60,7 @@
     <Compile Include="Logic\Enums\Orientation.cs" />
     <Compile Include="Logic\Enums\RotationState.cs" />
     <Compile Include="Logic\Enums\ShapeType.cs" />
+    <Compile Include="Logic\Extensions\StringExtensions.cs" />
     <Compile Include="Logic\FileReader.cs" />
     <Compile Include="Logic\FileWriter.cs" />
     <Compile Include="Logic\MenuManager.cs" />
@@ -67,8 +68,9 @@
     <Compile Include="Logic\Providers\ShapeProvider.cs" />
     <Compile Include="Logic\RelayCommand.cs" />
     <Compile Include="Logic\ShapeFactory.cs" />
-    <Compile Include="NamingWindow.xaml.cs">
-      <DependentUpon>NamingWindow.xaml</DependentUpon>
+    <Compile Include="ViewModels\NamingViewModel.cs" />
+    <Compile Include="Views\NamingView.xaml.cs">
+      <DependentUpon>NamingView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PauseMenuView.xaml.cs">
       <DependentUpon>PauseMenuView.xaml</DependentUpon>
@@ -110,7 +112,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="NamingWindow.xaml">
+    <Page Include="Views\NamingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
