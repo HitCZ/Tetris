@@ -1,0 +1,41 @@
+﻿<Window x:Class="Tetris.Views.MainMenuView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Tetris" Height="347.034" Width="528.814"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+
+    <Grid VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock 
+            Grid.Row="0"
+            x:Name="StartTextBlock" 
+            Text="START" 
+            FontFamily="Agency FB"
+            FontSize="40" 
+            HorizontalAlignment="Center"/>
+
+        <TextBlock  
+            Grid.Row="1"
+            x:Name="ScoreTextBlock" 
+            Text="TABULKA SKORE" 
+            FontFamily="Agency FB"
+            FontSize="40" 
+            HorizontalAlignment="Center"/>
+
+        <TextBlock  
+            Grid.Row="2"
+            x:Name="ExitTextBlock" 
+            Text="KONEC" 
+            FontFamily="Agency FB"
+            FontSize="40" 
+            HorizontalAlignment="Center"/>
+    </Grid>
+</Window>
