@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Tetris.Logic;
+using Tetris.Views;
 
-namespace Tetris {
-    class MenuManager {
+namespace Tetris
+{
+    public class MenuManager {
         // Aktualni okno
         private Window window;
         // Vsechny polozky menu v okne
@@ -234,8 +232,8 @@ namespace Tetris {
         /// Zobrazeni skore zebricku
         /// </summary>
         private void ShowScoreBoard() {
-            ScoreBoard scoreBoard = new ScoreBoard();
-            scoreBoard.Show();
+            ScoreBoardView scoreBoardView = new ScoreBoardView();
+            scoreBoardView.Show();
         }
 
         /// <summary>

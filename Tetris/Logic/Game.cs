@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using Tetris.Logic.Enums;
 using Tetris.Models;
 using Tetris.Models.Shapes;
+using Tetris.Views;
 using Orientation = Tetris.Logic.Enums.Orientation;
 
 namespace Tetris.Logic
@@ -227,7 +228,7 @@ namespace Tetris.Logic
 
         private void ShowMainMenu()
         {
-            var pauseMenu = new PauseMenu(this);
+            var pauseMenu = new PauseMenuView(this);
             pauseMenu.Show();
         }
 

@@ -70,8 +70,8 @@
     <Compile Include="NamingWindow.xaml.cs">
       <DependentUpon>NamingWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PauseMenu.xaml.cs">
-      <DependentUpon>PauseMenu.xaml</DependentUpon>
+    <Compile Include="Views\PauseMenuView.xaml.cs">
+      <DependentUpon>PauseMenuView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Logic\Record.cs" />
     <Compile Include="Models\Shapes\ShapeI.cs" />
@@ -84,9 +84,10 @@
       <DependentUpon>MainMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="ScoreBoard.xaml.cs">
-      <DependentUpon>ScoreBoard.xaml</DependentUpon>
+    <Compile Include="Views\ScoreBoardView.xaml.cs">
+      <DependentUpon>ScoreBoardView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\PauseMenuViewModel.cs" />
     <Compile Include="ViewModels\ScoreBoardViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -113,11 +114,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PauseMenu.xaml">
+    <Page Include="Views\PauseMenuView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ScoreBoard.xaml">
+    <Page Include="ResourceDictionary\Brushes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ScoreBoardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -159,9 +164,7 @@
   <ItemGroup>
     <Resource Include="Graphics\Tetris_background_blur.jpg" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
