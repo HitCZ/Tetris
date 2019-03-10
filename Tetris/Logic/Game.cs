@@ -132,7 +132,7 @@ namespace Tetris.Logic
         /// instancni promenne. Odstartuje novou hru
         /// </summary>
         /// <param name="mainWindow"></param>
-        public Game(MainWindow mainWindow, string name)
+        public Game(MainView mainWindow, string name)
         {
             this.mainWindow = mainWindow;
             this.mainWindow.txtScoreValue.DataContext = this;
