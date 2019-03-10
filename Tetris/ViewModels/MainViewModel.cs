@@ -1,28 +1,49 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Effects;
+using Tetris.Annotations;
 using Tetris.Logic;
 using Tetris.Views;
 
 namespace Tetris.ViewModels
 {
-    public class MainViewModel
+    public class MainViewModel : INotifyPropertyChanged
     {
         #region Fields
 
         private readonly Game gameInstance;
         private readonly BlurEffect blur;
         private const int RADIUS_COEFFICIENT = 10;
+        private int currentLevel;
+        private int currentScore;
 
         #endregion Fields
 
         #region Properties
 
-        public int CurrentLevel => gameInstance.CurrentLevel;
+        public int CurrentLevel
+        {
+            get => currentLevel;
+            private set
+            {
+                currentLevel = value;
+                OnPropertyChanged(nameof(CurrentLevel));
+            }
+        }
 
-        public int Score => gameInstance.CurrentScore;
+        public int CurrentScore
+        {
+            get => currentScore;
+            private set
+            {
+                currentScore = value;
+                OnPropertyChanged(nameof(CurrentScore));
+            }
+        }
 
         public Action ClearNextShapeGridAction;
 
@@ -42,10 +63,21 @@ namespace Tetris.ViewModels
         {
             blur = new BlurEffect { Radius = 0 };
             mainView.Effect = blur;
+
             gameInstance = new Game(this, numberOfRows, numberOfColumns, playerName);
+            gameInstance.GameScoreChangedAction += AdjustGameScore;
+            gameInstance.GameLevelChangedAction += AdjustGameLevel;
         }
 
         #endregion Constructor
+
+        #region Private Methods
+
+        private void AdjustGameScore(int score) => CurrentScore = score;
+
+        private void AdjustGameLevel(int level) => CurrentLevel = level;
+
+        #endregion Private Methods
 
         #region Public Methods
 
@@ -70,7 +102,7 @@ namespace Tetris.ViewModels
                     gameInstance.MoveDownCommand.Execute(null);
                     break;
                 case Key.Space:
-                     gameInstance.RotateCommand.Execute(null);
+                    gameInstance.RotateCommand.Execute(null);
                     break;
             }
         }
@@ -101,5 +133,17 @@ namespace Tetris.ViewModels
         }
 
         #endregion Public Methods
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion INotifyPropertyChanged Members
     }
 }

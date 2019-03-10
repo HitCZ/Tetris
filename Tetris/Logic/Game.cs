@@ -65,6 +65,7 @@ namespace Tetris.Logic
             set
             {
                 currentCurrentScore = value;
+                GameScoreChangedAction(value);
                 OnPropertyChanged(nameof(CurrentScore));
                 //mainWindow.txtScoreValue.Text = currentCurrentScore.ToString();
             }
@@ -79,6 +80,7 @@ namespace Tetris.Logic
             set
             {
                 currentLevel = value;
+                GameLevelChangedAction(value);
                 //mainWindow.txtLevelValue.Text = currentLevel.ToString();
                 OnPropertyChanged(nameof(CurrentLevel));
             }
@@ -110,10 +112,10 @@ namespace Tetris.Logic
             }
         }
 
-        public int NumberOfRows { get; set; }
+        public Action<int> GameScoreChangedAction;
 
-        public int NumberOfColumns { get; set; }
-        
+        public Action<int> GameLevelChangedAction;
+
         #endregion Properties
 
         #region Commands
