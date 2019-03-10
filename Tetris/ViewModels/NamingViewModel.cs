@@ -10,6 +10,7 @@ using System.Windows.Input;
 using Tetris.Annotations;
 using Tetris.Logic;
 using Tetris.Logic.Extensions;
+using Tetris.Views;
 
 namespace Tetris.ViewModels
 {
@@ -65,9 +66,9 @@ namespace Tetris.ViewModels
 
         private void StartGame(string player)
         {
-            var mainWindow = new MainWindow(player);
-            Application.Current.MainWindow = mainWindow;
-            mainWindow.Show();
+            var mainView = new MainView(player);
+            Application.Current.MainWindow = mainView;
+            mainView.Show();
             CloseAction();
         }
 

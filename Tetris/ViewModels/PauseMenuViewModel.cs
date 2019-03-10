@@ -18,7 +18,7 @@ namespace Tetris.ViewModels
 
         public PauseMenuViewModel(PauseMenuView menuView, Game gameInstance, TextBlock[] menuItems)
         {
-            var highlightColor = (SolidColorBrush)Application.Current.Resources["MenuItemHighlightBrush"];
+            var highlightColor = (SolidColorBrush)Application.Current.Resources["PauseMenuItemHighlightBrush"];
             MenuManager = new MenuManager(menuView, menuItems, gameInstance, highlightColor);
         }
 

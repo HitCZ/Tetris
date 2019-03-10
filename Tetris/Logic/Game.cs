@@ -1,225 +1,224 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Tetris.Annotations;
 using Tetris.Logic.Enums;
 using Tetris.Models;
 using Tetris.Models.Shapes;
+using Tetris.ViewModels;
 using Tetris.Views;
 using Orientation = Tetris.Logic.Enums.Orientation;
 
 namespace Tetris.Logic
 {
-    public class Game
+    public class Game : INotifyPropertyChanged
     {
-        /// <summary>
-        /// Odkaz na hlavni okno aplikace
-        /// </summary>
-        private MainWindow mainWindow;
+        #region Fields
 
-        /// <summary>
-        /// Zapisovac skore
-        /// </summary>
+        private MainViewModel mainViewModel;
         private FileWriter writer;
-
-        /// <summary>
-        /// Herni skore
-        /// </summary>
-        private int score = 0;
-
-        /// <summary>
-        /// Herni mapa
-        /// </summary>
+        private int currentCurrentScore = 0;
         private Block[,] map;
-
-        /// <summary>
-        /// Seznam vsech tvaru, ktere se ve hre mohou vyskytnout
-        /// </summary>
         private List<ShapeType> listOfShapeTypes;
-
-        /// <summary>
-        /// Generator nahodnych cisel
-        /// </summary>
         private Random random;
-
-        /// <summary>
-        /// Tvar, ktery hrac ovlada
-        /// </summary>
         private Shape controlableShape;
-
-        /// <summary>
-        /// Pristi objekt, ktery bude do hry pridan
-        /// </summary>
         private Shape nextShape;
-
-        /// <summary>
-        /// Vzdalenost, o kterou se objekt posune
-        /// </summary>
         private int moveDistance = 1;
-
-        /// <summary>
-        /// Uchovava informaci o tom, zda byla zjistena kolize mez objekty
-        /// </summary>
         private bool collisionDetected;
-
-        /// <summary>
-        /// Seznam jednotlivych ctverecku ve hre
-        /// </summary>
         private List<Block> listOfBlocks;
-
-        /// <summary>
-        /// Casovac zajistujici posun objektu dolu za urcity cas
-        /// </summary>
         private DispatcherTimer dropTimer;
-
+        //private string playerName;
+        private int row = 2;
+        private int column = 4;
+        private int currentLevel = 1;
+        private int streakOfClearedRows = 0;
+        private int totalNumberOfClearedRows;
+        private int clearedRowsLimit = 15;
+        private int startingTimerInterval = 750;
+        private int currentDropTimerInterval;
+        private int numberOfRows;
+        private int numberOfColumns;
+        private bool paused;
         private string playerName;
 
-        /// <summary>
-        /// Radek pro spawn
-        /// </summary>
-        private int row = 2;
+        #endregion Fields
+
+        #region Properties
 
         /// <summary>
-        /// Policko pro spawn
+        /// Gets or sets 
         /// </summary>
-        private int column = 4;
+        //public Block[,] Map { get; private set; }
 
         /// <summary>
-        /// Cislo aktualniho levelu
+        /// Gets or sets the current score.
         /// </summary>
-        private int level = 1;
+        public int CurrentScore
+        {
+            get => currentCurrentScore;
+
+            set
+            {
+                currentCurrentScore = value;
+                OnPropertyChanged(nameof(CurrentScore));
+                //mainWindow.txtScoreValue.Text = currentCurrentScore.ToString();
+            }
+        }
 
         /// <summary>
-        /// Kolik radku bylo odstraneno za sebou
+        /// Gets or sets the current level.
         /// </summary>
-        private int streakOfClearedRows = 0;
+        public int CurrentLevel
+        {
+            get => currentLevel;
+            set
+            {
+                currentLevel = value;
+                //mainWindow.txtLevelValue.Text = currentLevel.ToString();
+                OnPropertyChanged(nameof(CurrentLevel));
+            }
+        }
 
         /// <summary>
-        /// Kolik radku bylo odstraneno celkem
+        /// Gets or sets the total number of cleared rows.
         /// </summary>
-        private int totalNumberOfClearedRows = 0;
+        public int ClearedRows
+        {
+            get => totalNumberOfClearedRows;
+            private set
+            {
+                totalNumberOfClearedRows = value;
+                OnPropertyChanged(nameof(ClearedRows));
+            }
+        }
 
         /// <summary>
-        /// Maximalni pocet odstranenych radku, pred postupem do dalsi urovne
+        /// Gets or sets the information about the game being paused.
         /// </summary>
-        private int clearedRowsLimit = 15;
+        public bool IsPaused
+        {
+            get => paused;
+            private set
+            {
+                paused = value;
+                OnPropertyChanged(nameof(IsPaused));
+            }
+        }
 
-        /// <summary>
-        /// Pocatecni interval automatickeho posunu objektu
-        /// </summary>
-        private int startingTimerInterval = 750;
+        public int NumberOfRows { get; set; }
 
-        /// <summary>
-        /// Aktualni interval posunu objektu dolu
-        /// </summary>
-        private int currentDropTimerInterval;
+        public int NumberOfColumns { get; set; }
+        
+        #endregion Properties
 
+        #region Commands
 
-        private bool paused = false;
+        public ICommand MoveLeftCommand { get; set; }
+        public ICommand MoveRightCommand { get; set; }
+        public ICommand MoveDownCommand { get; set; }
+        public ICommand RotateCommand { get; set; }
+        public ICommand PauseCommand { get; set; }
 
-        /// <summary>
-        /// Inicializuje herni instanci
-        /// </summary>
+        #endregion Commands
+
+        #region Constructor
+
         public Game()
         {
-            InitializeInstance();
+            Initialize();
+            InitializeCommands();
         }
 
-        /// <summary>
-        /// Inicializuje odkaz na hlavni okno, DataContext pro skore TextBlock a
-        /// instancni promenne. Odstartuje novou hru
-        /// </summary>
-        /// <param name="mainWindow"></param>
-        public Game(MainView mainWindow, string name)
+        /// <summary/>
+        public Game(MainViewModel mainViewModel, int numberOfRows, int numberOfColumns, string playerName)
         {
-            this.mainWindow = mainWindow;
-            this.mainWindow.txtScoreValue.DataContext = this;
-            this.mainWindow.txtLevelValue.DataContext = this;
-            playerName = name;
+            this.mainViewModel = mainViewModel;
+            //this.mainViewModel.Score = Score;
+            //this.mainWindow.txtLevelValue.DataContext = this;
+            this.numberOfRows = numberOfRows;
+            this.numberOfColumns = numberOfColumns;
+            this.playerName = playerName;
 
-            InitializeInstance();
-            StartNewGame();
-            var w = new FileWriter();
+            Initialize();
+            InitializeCommands();
+            //StartNewGame();
+            //var w = new FileWriter();
 
         }
 
-        public string PlayerName => playerName;
+        #endregion Constructor
 
-        /// <summary>
-        /// Vraci odkaz na herni mapu
-        /// </summary>
-        public Block[,] Map => map;
+        #region Private Methods
 
-        /// <summary>
-        /// Vraci a nastavuje skore, pri nastaveni aktualizuje TextBlock
-        /// </summary>
-        public int Score
+        private void InitializeCommands()
         {
-            get => score;
-
-            set
-            {
-                score = value;
-                mainWindow.txtScoreValue.Text = score.ToString();
-            }
+            MoveLeftCommand = new RelayCommand(MoveLeftCommandExecute);
+            MoveRightCommand = new RelayCommand(MoveRightCommandExecute);
+            MoveDownCommand = new RelayCommand(MoveDownCommandExecute);
+            RotateCommand = new RelayCommand(RotateCommandExecute);
+            PauseCommand = new RelayCommand(PauseCommandExecute);
         }
 
-        /// <summary>
-        /// vraci a nastavuje konkretni cislo urovne
-        /// </summary>
-        public int Level
+        private void MoveLeftCommandExecute()
         {
-            get => level;
-            set
-            {
-                level = value;
-                mainWindow.txtLevelValue.Text = level.ToString();
-            }
+            if (paused || controlableShape is null)
+                return;
+
+            MoveShape(controlableShape, Orientation.Horizontal, -moveDistance);
         }
 
-        public int ClearedRows => totalNumberOfClearedRows;
-
-        public bool IsPaused => paused;
-
-        /// <summary>
-        /// Spusti novou hru
-        /// </summary>
-        public void StartNewGame()
+        private void MoveRightCommandExecute()
         {
-            Reset();
-            mainWindow.RemoveBlur();
-            controlableShape =
-               //this.SpawnContreteShape(ShapeType.ShapeLInverted, 5, 5, this);
-               SpawnNewShape(row, column);
-            AddShapeToGame(controlableShape);
+            if (paused || controlableShape is null)
+                return;
 
-            nextShape = SpawnNewShape(row, column);
-            AddShapeToNextShapeGrid(nextShape);
+            MoveShape(controlableShape, Orientation.Horizontal, moveDistance);
+        }
 
-            dropTimer.Start();
+        private void MoveDownCommandExecute()
+        {
+            if (paused || controlableShape is null)
+                return;
+
+            MoveShape(controlableShape, Orientation.Vertical, moveDistance);
+        }
+
+        private void RotateCommandExecute()
+        {
+            if (paused || controlableShape is null)
+                return;
+
+            RotateShape(controlableShape);
+        }
+
+        private void PauseCommandExecute()
+        {
+            Pause();
+            ShowMainMenu();
         }
 
         /// <summary>
         /// 
         /// </summary>
-        private void InitializeInstance()
+        private void Initialize()
         {
             random = new Random();
             listOfShapeTypes = new List<ShapeType>();
             AddShapeTypesToList();
-            mainWindow.KeyDown += PlayerInput;
+            //mainWindow.KeyDown += PlayerInput;
             listOfBlocks = new List<Block>();
             currentDropTimerInterval = startingTimerInterval;
 
-            // pocet radku v gridu
-            var numberOfRows =
-                mainWindow.gameGrid.RowDefinitions.Count;
+            //// pocet radku v gridu
+            //var numberOfRows = mainWindow.gameGrid.RowDefinitions.Count;
 
-            // pocet sloupcu v gridu
-            var numberOfColumns =
-                mainWindow.gameGrid.ColumnDefinitions.Count;
+            //// pocet sloupcu v gridu
+            //var numberOfColumns = mainWindow.gameGrid.ColumnDefinitions.Count;
 
             map = new Block[numberOfRows, numberOfColumns];
 
@@ -240,15 +239,39 @@ namespace Tetris.Logic
         /// </summary>
         private void Reset()
         {
-            Score = 0;
+            CurrentScore = 0;
             totalNumberOfClearedRows = 0;
             streakOfClearedRows = 0;
-            Level = 1;
+            CurrentLevel = 1;
             dropTimer.Stop();
             listOfBlocks.Clear();
             paused = false;
             ClearMap();
         }
+
+        #endregion Private Methods
+
+        #region Public Methods
+
+        /// <summary>
+        /// Starts new game
+        /// </summary>
+        public void StartNewGame()
+        {
+            Reset();
+            mainViewModel.RemoveBlur();
+            controlableShape = SpawnNewShape(row, column);
+            AddShapeToGame(controlableShape);
+
+            nextShape = SpawnNewShape(row, column);
+            AddShapeToNextShapeGrid(nextShape);
+
+            dropTimer.Start();
+        }
+
+        #endregion Public Methods
+
+        
 
         /// <summary>
         /// Zapauzuje hru a zobrazi pauzovaci nabidku
@@ -257,7 +280,7 @@ namespace Tetris.Logic
         {
             paused = true;
             dropTimer.Stop();
-            mainWindow.AddBlur();
+            mainViewModel.AddBlur();
         }
 
         /// <summary>
@@ -266,7 +289,7 @@ namespace Tetris.Logic
         public void Resume()
         {
             paused = false;
-            mainWindow.RemoveBlur();
+            mainViewModel.RemoveBlur();
             dropTimer.Start();
         }
 
@@ -285,9 +308,9 @@ namespace Tetris.Logic
         {
             var r = new Record(
                 playerName,
-                score,
+                currentCurrentScore,
                 totalNumberOfClearedRows,
-                level);
+                currentLevel);
 
             if (writer == null)
                 writer = new FileWriter();
@@ -300,7 +323,7 @@ namespace Tetris.Logic
         {
             totalNumberOfClearedRows = 0;
             streakOfClearedRows = 0;
-            Level++;
+            CurrentLevel++;
             listOfBlocks.Clear();
             ClearMap();
 
@@ -351,7 +374,8 @@ namespace Tetris.Logic
 
         private void AddShapeToNextShapeGrid(Shape shape)
         {
-            mainWindow.gridNextShape.Children.Clear();
+            //mainViewModel.gridNextShape.Children.Clear();
+            mainViewModel.ClearNextShapeGridAction();
 
             if (shape != null)
                 for (var row = 0; row < shape.ComposedShape.GetLength(0); row++)
@@ -360,7 +384,8 @@ namespace Tetris.Logic
                         {
                             Grid.SetRow(shape.ComposedShape[row, col].Border, row);
                             Grid.SetColumn(shape.ComposedShape[row, col].Border, col);
-                            mainWindow.gridNextShape.Children.Add(shape.ComposedShape[row, col].Border);
+                            mainViewModel.AddBlockToNextShapeGridAction.Invoke(shape.ComposedShape[row, col].Border);
+                            //mainWindow.gridNextShape.Children.Add(shape.ComposedShape[row, col].Border);
                         }
         }
 
@@ -400,34 +425,14 @@ namespace Tetris.Logic
                         case Key.Space:
                             RotateShape(controlableShape);
                             break;
-                        // posune objekt vertikalne o zapornou vzdalenost
-                        /*
-                        case Key.Up:
-                                this.MoveShape(
-                                    this.controlableShape,
-                                    Orientation.Vertical,
-                                    -this.moveDistance);
-                            
-                            break;
-                            */
                         case Key.Right:
-                            MoveShape(
-                                controlableShape,
-                                Orientation.Horizontal,
-                                moveDistance);
+                            MoveShape(controlableShape, Orientation.Horizontal, moveDistance);
                             break;
                         case Key.Down:
-                            MoveShape(
-                                controlableShape,
-                                Orientation.Vertical,
-                                moveDistance);
+                            MoveShape(controlableShape, Orientation.Vertical, moveDistance);
                             break;
                         case Key.Left:
-                            // posune objekt horizontalne o zapornou vzdalenost
-                            MoveShape(
-                                controlableShape,
-                                Orientation.Horizontal,
-                                -moveDistance);
+                            MoveShape(controlableShape, Orientation.Horizontal, -moveDistance);
                             break;
                         case Key.Escape:
                             Pause();
@@ -449,15 +454,16 @@ namespace Tetris.Logic
         /// </summary>
         private void RefreshGrid()
         {
-            mainWindow.gameGrid.Children.Clear();
+            //mainWindow.gameGrid.Children.Clear();
+            mainViewModel.ClearGameGridAction();
 
             foreach (var block in listOfBlocks)
             {
                 Grid.SetRow(block.Border, block.Row);
                 Grid.SetColumn(block.Border, block.Column);
 
-                mainWindow.gameGrid.Children.Add(block.Border);
-
+                //mainWindow.gameGrid.Children.Add(block.Border);
+                mainViewModel.AddBlockToGameGridAction(block.Border);
             }
         }
 
@@ -481,7 +487,8 @@ namespace Tetris.Logic
         /// </summary>
         private void SpawnShapes()
         {
-            mainWindow.gridNextShape.Children.Clear();
+            //mainWindow.gridNextShape.Children.Clear();
+            mainViewModel.ClearNextShapeGridAction();
             controlableShape = nextShape;
             AddShapeToGame(controlableShape);
             nextShape = SpawnNewShape(row, column);
@@ -578,7 +585,8 @@ namespace Tetris.Logic
 
         private void RemoveBlockFromGrid(Block block)
         {
-            mainWindow.gameGrid.Children.Remove(block.Border);
+            //mainWindow.gameGrid.Children.Remove(block.Border);
+            mainViewModel.ClearGameGridAction();
         }
 
         private void RemoveBlock(Block block)
@@ -613,7 +621,11 @@ namespace Tetris.Logic
         /// <param name="shape">Obrazec pro odstraneni</param>
         private void RemoveShapeFromGrid(Shape shape)
         {
-            foreach (var part in shape.ListOfParts) mainWindow.gameGrid.Children.Remove(part.Border);
+            foreach (var part in shape.ListOfParts)
+            {
+                //mainWindow.gameGrid.Children.Remove(part.Border);
+                mainViewModel.RemoveBlockFromGameGridAction(part.Border);
+            }
         }
 
         /// <summary>
@@ -896,7 +908,7 @@ namespace Tetris.Logic
                     value = 1200;
                     break;
             }
-            Score += value * level;
+            CurrentScore += value * currentLevel;
             streakOfClearedRows = 0;
         }
 
@@ -948,6 +960,14 @@ namespace Tetris.Logic
         private MessageBoxResult ShowDialog(string msg, string title)
         {
             return MessageBox.Show(msg, title, MessageBoxButton.YesNo);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

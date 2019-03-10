@@ -74,56 +74,9 @@ namespace Tetris.Models.Shapes
         }
 
 
-        protected override void ChangeRotationToRotatedTwice()
-        {
-            RotationState = RotationState.RotatedTwice;
+        protected override void ChangeRotationToRotatedTwice() => ChangeRotationToDefault();
 
-            ComposedShape = new[,]
-                    {
-                        { Part1,      Part2,      null,       null },
-                        { null,       Part3,      Part4,      null },
-                        { null,       null,       null,       null },
-                        { null,       null,       null,       null }
-                    };
-
-            Part1.Row = Row - 1;
-            Part1.Column = Column - 2;
-
-            Part2.Row = Part1.Row;
-            Part2.Column = Part1.Column + 1;
-
-            Part3.Row = Part1.Row + 1;
-            Part3.Column = Part1.Column + 1;
-
-            Part4.Row = Part1.Row + 1;
-            Part4.Column = Part1.Column + 2;
-        }
-
-        protected override void ChangeRotationToRotatedThreeTimes()
-        {
-            RotationState = RotationState.RotatedThreeTimes;
-
-            ComposedShape = new [,]
-                    {
-                        { null,       Part1,      null,      null },
-                        { Part2,      Part3,      null,      null },
-                        { Part4,      null,       null,      null },
-                        { null,       null,       null,      null }
-
-                    };
-
-            Part1.Row = Row - 2;
-            Part1.Column = Column + 1;
-
-            Part2.Row = Part1.Row + 1;
-            Part2.Column = Part1.Column - 1;
-
-            Part3.Row = Part1.Row + 1;
-            Part3.Column = Part1.Column;
-
-            Part4.Row = Part1.Row + 2;
-            Part4.Column = Part1.Column - 1;
-        }
+        protected override void ChangeRotationToRotatedThreeTimes() => ChangeRotationToRotatedOnce();
 
         #endregion Overriden Methods
     }

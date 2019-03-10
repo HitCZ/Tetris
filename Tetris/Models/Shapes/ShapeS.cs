@@ -75,13 +75,9 @@ namespace Tetris.Models.Shapes
         }
 
 
-        protected override void ChangeRotationToRotatedTwice()
-        {
-        }
+        protected override void ChangeRotationToRotatedTwice() => ChangeRotationToDefault();
 
-        protected override void ChangeRotationToRotatedThreeTimes()
-        {
-        }
+        protected override void ChangeRotationToRotatedThreeTimes() => ChangeRotationToRotatedOnce();
 
         #endregion Overriden Methods
     }

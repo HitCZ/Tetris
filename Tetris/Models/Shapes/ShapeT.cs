@@ -15,7 +15,6 @@ namespace Tetris.Models.Shapes
 
         #region Overriden Methods
 
-
         protected override void Initialize()
         {
             Type = ShapeType.ShapeT;
