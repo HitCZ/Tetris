@@ -104,5 +104,32 @@ namespace Tetris.Properties {
                 return ResourceManager.GetString("MENU_START", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Konec hry, přejete si začít znovu?.
+        /// </summary>
+        internal static string MSG_ENDGAME {
+            get {
+                return ResourceManager.GetString("MSG_ENDGAME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Přejete si hru vypnout?.
+        /// </summary>
+        internal static string MSG_QUITGAME {
+            get {
+                return ResourceManager.GetString("MSG_QUITGAME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Konec hry.
+        /// </summary>
+        internal static string TITLE_ENDGAME {
+            get {
+                return ResourceManager.GetString("TITLE_ENDGAME", resourceCulture);
+            }
+        }
     }
 }

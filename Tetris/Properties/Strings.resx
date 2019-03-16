@@ -132,4 +132,13 @@
   <data name="MENU_START" xml:space="preserve">
     <value>start</value>
   </data>
+  <data name="MSG_ENDGAME" xml:space="preserve">
+    <value>Konec hry, přejete si začít znovu?</value>
+  </data>
+  <data name="MSG_QUITGAME" xml:space="preserve">
+    <value>Přejete si hru vypnout?</value>
+  </data>
+  <data name="TITLE_ENDGAME" xml:space="preserve">
+    <value>Konec hry</value>
+  </data>
 </root>

@@ -3,93 +3,40 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Tetris.Logic;
 
-namespace Tetris.Models {
-    /// <summary>
-    /// Trida reprezentuje jednotlive bloky, ze kterych se skladaji jednotlive
-    /// tvary ve hre. Kazdy blok je tvoren ctyruhelnikem, ktery je obsazen v 
-    /// ramecku.
-    /// </summary>
-    public class Block {
-        /// <summary>
-        /// Okraj kolem blocku
-        /// </summary>
-        private Border border;
+namespace Tetris.Models
+{
+    public class Block
+    {
+        #region Constructor
 
-        /// <summary>
-        /// Barva blocku, predavana parametrem
-        /// </summary>
-        private Brush color;
-
-        /// <summary>
-        /// Ctyruhelnik predstavujici block
-        /// </summary>
-        private Rectangle rectangle;
-
-        /// <summary>
-        /// X a Y souradnice 
-        /// </summary>
-        private int row, column;
-
-        /// <summary>
-        /// Inicializuje barvu, border a ctyruhelnik. 
-        /// Do obsahu borderu pridava ctyruhelnik.
-        /// </summary>
-        /// <param name="color">Zvolena barva objektu</param>
-        public Block(Brush color) {
-            this.color = color;
-
-            this.border = new Border();
-            this.border.Width = ImportantValues.Size;
-            this.border.Height = ImportantValues.Size;
-            this.border.BorderThickness = new System.Windows.Thickness(1);
-            this.border.BorderBrush = Brushes.Black;
-
-            this.rectangle = new Rectangle();
-            this.rectangle.Width = ImportantValues.Size;
-            this.rectangle.Height = ImportantValues.Size;
-            this.rectangle.Fill = this.color;
-
-            this.border.Child = this.rectangle;
-        }
-
-        /// <summary>
-        /// Vraci border Blocku
-        /// </summary>
-        public Border Border
+        public Block(Brush color)
         {
-            get { return this.border; }
+            Border = new Border
+            {
+                Width = ImportantValues.Size,
+                Height = ImportantValues.Size,
+                BorderThickness = new System.Windows.Thickness(1),
+                BorderBrush = Brushes.Black
+            };
+
+            var rectangle = new Rectangle
+            {
+                Width = ImportantValues.Size,
+                Height = ImportantValues.Size,
+                Fill = color
+            };
+
+            Border.Child = rectangle;
         }
 
-        /// <summary>
-        /// Vraci vysku blocku
-        /// </summary>
-        public double Width
-        {
-            get { return this.rectangle.Width; }
-        }
+        #endregion Constructor
 
-        /// <summary>
-        /// Vraci sirku blocku
-        /// </summary>
-        public double Height
-        {
-            get { return this.rectangle.Height; }
-        }
+        #region Properties
 
-        /// <summary>
-        /// Vraci ctyruhelnik predstavujici block
-        /// </summary>
-        public Rectangle Rectangle
-        {
-            get { return this.rectangle; }
-        }
+        public Border Border { get; set; }
 
         public Position Position { get; set; }
 
-        public Brush Color
-        {
-            get { return this.color; }
-            set { this.color = value; }
-        }
+        #endregion Properties
     }
 }

@@ -7,10 +7,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Tetris.Annotations;
-using Tetris.Logic.Enums;
 using Tetris.Logic.Providers;
 using Tetris.Models;
 using Tetris.Models.Shapes;
+using Tetris.Properties;
 using Tetris.ViewModels;
 using Tetris.Views;
 using Orientation = Tetris.Logic.Enums.Orientation;
@@ -21,31 +21,28 @@ namespace Tetris.Logic
     {
         #region Fields
 
-        private MainViewModel mainViewModel;
-        private FileWriter writer;
-        private int currentCurrentScore = 0;
-        private Block[,] map;
-        private List<ShapeType> listOfShapeTypes;
-        private Random random;
-        private Shape controlableShape;
-        private Shape nextShape;
-        private int moveDistance = 1;
-        private bool collisionDetected;
-        private List<Block> listOfBlocks;
-        private DispatcherTimer dropTimer;
-        //private string playerName;
+        private readonly MainViewModel mainViewModel;
+        private readonly string playerName;
+        private readonly int numberOfRows;
+        private readonly int numberOfColumns;
         private int startingRow = 2;
         private int startingColumn = 4;
         private int currentLevel = 1;
-        private int streakOfClearedRows = 0;
+        private int streakOfClearedRows;
         private int totalNumberOfClearedRows;
         private int clearedRowsLimit = 15;
         private int startingTimerInterval = 750;
         private int currentDropTimerInterval;
-        private int numberOfRows;
-        private int numberOfColumns;
+        private int currentCurrentScore;
+        private int moveDistance = 1;
         private bool paused;
-        private string playerName;
+        private FileWriter writer;
+        private Block[,] map;
+        private Random random;
+        private Shape controlableShape;
+        private Shape nextShape;
+        private List<Block> listOfBlocks;
+        private DispatcherTimer dropTimer;
 
         #endregion Fields
 
@@ -260,7 +257,6 @@ namespace Tetris.Logic
         private void Initialize()
         {
             random = new Random();
-            listOfShapeTypes = new List<ShapeType>();
             listOfBlocks = new List<Block>();
             currentDropTimerInterval = startingTimerInterval;
             map = new Block[numberOfRows, numberOfColumns];
@@ -408,28 +404,6 @@ namespace Tetris.Logic
             map[block.Position.Row, block.Position.Column] = block;
         }
 
-        private void RemoveBlockFromMap(Block block)
-        {
-            map[block.Position.Row, block.Position.Column] = null;
-        }
-
-        private void RemoveBlockFromGrid(Block block)
-        {
-            //mainWindow.gameGrid.Children.Remove(block.Border);
-            mainViewModel.ClearGameGridAction();
-        }
-
-        private void RemoveBlock(Block block)
-        {
-            RemoveBlockFromMap(block);
-            RemoveBlockFromGrid(block);
-        }
-
-        /// <summary>
-        /// Vezme predany objekt, a na odpovidajici pozice na mape vlozi jeho 
-        /// jednotlive casti
-        /// </summary>
-        /// <param name="shape">Objekt pro pridani do mapy</param>
         private void AddShapeToMap(Shape shape)
         {
             foreach (var part in shape.ListOfParts)
@@ -438,11 +412,6 @@ namespace Tetris.Logic
             }
         }
 
-        /// <summary>
-        /// Odstrani obrazec z herni mapy, tak ze jednotlive souradnice nastavi 
-        /// na NULL
-        /// </summary>
-        /// <param name="shape">Obrazec pro odstraneni</param>
         private void RemoveShapeFromMap(Shape shape)
         {
             foreach (var part in shape.ListOfParts)
@@ -451,23 +420,14 @@ namespace Tetris.Logic
             }
         }
 
-        /// <summary>
-        /// Odstrani dany obrazec z herni obrazovky
-        /// </summary>
-        /// <param name="shape">Obrazec pro odstraneni</param>
         private void RemoveShapeFromGrid(Shape shape)
         {
             foreach (var part in shape.ListOfParts)
             {
-                //mainWindow.gameGrid.Children.Remove(part.Border);
                 mainViewModel.RemoveBlockFromGameGridAction(part.Border);
             }
         }
 
-        /// <summary>
-        /// Odstrani zadany obrazec z herni mapy a herni obrazovky
-        /// </summary>
-        /// <param name="shape">Obrazec pro odstraneni</param>
         private void RemoveShape(Shape shape)
         {
             RemoveShapeFromMap(shape);
@@ -476,9 +436,10 @@ namespace Tetris.Logic
 
         private void MoveShape(Shape shape, Orientation orientation, int distance)
         {
-            if (shape == null)
+            if (shape is null)
                 return;
-            CheckMovementCollision(shape, orientation, distance);
+
+            var collisionDetected = CheckMovementCollision(shape, orientation, distance);
 
             if (collisionDetected)
                 return;
@@ -489,17 +450,17 @@ namespace Tetris.Logic
             UpdateGame();
         }
 
-        private void CheckMovementCollision(Shape shape, Orientation orientation, int distance)
+        private bool CheckMovementCollision(Shape shape, Orientation orientation, int distance)
         {
-            collisionDetected = false;
-
             foreach (var part in shape.ListOfParts)
+            {
                 switch (orientation)
                 {
                     case Orientation.Horizontal:
-                        if (part.Position.Column + distance < 0 || part.Position.Column + distance > map.GetLength(1) - 1)
+                        if (part.Position.Column + distance < 0 ||
+                            part.Position.Column + distance > map.GetLength(1) - 1)
                         {
-                            collisionDetected = true;
+                            return true;
                         }
                         else if (map[part.Position.Row, part.Position.Column + distance] != null)
                         {
@@ -508,109 +469,107 @@ namespace Tetris.Logic
                                 && map[part.Position.Row, part.Position.Column + distance] != shape.Part3
                                 && map[part.Position.Row, part.Position.Column + distance] != shape.Part4)
                             {
-                                collisionDetected = true;
+                                return true;
                             }
                         }
+
                         break;
                     case Orientation.Vertical:
                         if (part.Position.Row + distance < 0)
                         {
-                            collisionDetected = true;
+                            return true;
                         }
                         else if (
                             part.Position.Row + distance > map.GetLength(0) - 1)
                         {
-                            collisionDetected = true;
                             CheckRows();
                             CalculateScore();
                             SpawnShapes();
-                            return;
+                            return true;
                         }
                         else if
                             (map[part.Position.Row + distance, part.Position.Column] != null)
                         {
-                            if (   map[part.Position.Row + distance, part.Position.Column] != shape.Part1
+                            if (map[part.Position.Row + distance, part.Position.Column] != shape.Part1
                                 && map[part.Position.Row + distance, part.Position.Column] != shape.Part2
                                 && map[part.Position.Row + distance, part.Position.Column] != shape.Part3
                                 && map[part.Position.Row + distance, part.Position.Column] != shape.Part4)
                             {
-                                collisionDetected = true;
-
                                 CheckRows();
                                 CalculateScore();
                                 SpawnShapes();
 
-                                return;
+                                return true;
                             }
                         }
+
                         break;
                 }
+            }
+
+            return false;
         }
 
-        private void CheckRotationCollision(Shape shape)
+        private bool CheckRotationCollision(Shape shape)
         {
-            collisionDetected = false;
-
             foreach (var part in shape.ListOfParts)
                 if (part.Position.Row < 0 || part.Position.Row > map.GetLength(0) - 1)
                 {
-                    collisionDetected = true;
-                    break;
+                    return true;
                 }
                 else if (part.Position.Column < 0)
                 {
-                    collisionDetected = true;
+                    return true;
                 }
                 else if (part.Position.Column >= map.GetLength(1) - 1)
                 {
-                    collisionDetected = true;
+                    return true;
                 }
                 else if (map[part.Position.Row, part.Position.Column] != null)
                 {
-                    if (map[part.Position.Row, part.Position.Column] == shape.Part1 || 
+                    if (map[part.Position.Row, part.Position.Column] == shape.Part1 ||
                         map[part.Position.Row, part.Position.Column] == shape.Part2 ||
                         map[part.Position.Row, part.Position.Column] == shape.Part3 ||
                         map[part.Position.Row, part.Position.Column] == shape.Part4)
                         continue;
 
-                    collisionDetected = true;
-
-                    break;
+                    return true;
                 }
+
+            return false;
         }
 
         private void RotateShape(Shape shape)
         {
-            if (shape != null)
+            if (shape is null)
+                return;
+
+            var previousRotation = shape.RotationState;
+
+            var previousPartsPositions = new[]
             {
-                var previousRotation = shape.RotationState;
+                shape.Part1.Position,
+                shape.Part2.Position,
+                shape.Part3.Position,
+                shape.Part4.Position
+            };
 
-                var previousPartsPositions = new[]
-                {
-                    shape.Part1.Position,
-                    shape.Part2.Position,
-                    shape.Part3.Position,
-                    shape.Part4.Position
-                };
+            RemoveShape(shape);
 
-                RemoveShape(shape);
+            shape.Rotate();
+            var collisionDetected = CheckRotationCollision(shape);
 
-                shape.Rotate();
-                CheckRotationCollision(shape);
-
-                // pokud objekt zasahuje mimo herni pole, vrati se puvodni stav
-                if (collisionDetected)
-                {
-                    shape.ChangeRotationState(previousRotation);
-                    shape.Part1.Position = previousPartsPositions[0];
-                    shape.Part2.Position = previousPartsPositions[1];
-                    shape.Part3.Position = previousPartsPositions[2];
-                    shape.Part4.Position = previousPartsPositions[3];
-                }
-
-                AddShapeToMap(shape);
-                UpdateGame();
+            if (collisionDetected)
+            {
+                shape.ChangeRotationState(previousRotation);
+                shape.Part1.Position = previousPartsPositions[0];
+                shape.Part2.Position = previousPartsPositions[1];
+                shape.Part3.Position = previousPartsPositions[2];
+                shape.Part4.Position = previousPartsPositions[3];
             }
+
+            AddShapeToMap(shape);
+            UpdateGame();
         }
 
         private void CheckRows()
@@ -618,56 +577,42 @@ namespace Tetris.Logic
             CheckTopRow();
             CheckFullRows();
 
-            if (totalNumberOfClearedRows >= clearedRowsLimit) LevelUp();
+            if (totalNumberOfClearedRows >= clearedRowsLimit)
+                LevelUp();
         }
 
-        /// <summary>
-        /// Zkontroluje jestli nektery block na herni mape nezasahuje na prvni 
-        /// radek mimo herni obrazovku, pokud ano, vyvola konec hry
-        /// </summary>
         private void CheckTopRow()
         {
-            var row = 5;
+            const int row = 5;
 
             for (var col = 0; col < map.GetLength(1); col++)
+            {
                 if (map[row, col] != null)
-                {
-                    Console.WriteLine("Ending game: ROW: {0} COL: {1}", row, col);
                     GameOver();
-                }
+            }
         }
 
-        /// <summary>
-        /// Zkontroluje, zda je radek zaplnen
-        /// </summary>
         private void CheckFullRows()
         {
-            var isRowFull = true;
             for (var row = map.GetLength(0) - 1; row >= 0; row--)
             {
-                isRowFull = true;
+                var isRowFull = true;
                 for (var column = 0; column < map.GetLength(1); column++)
-                    if (map[row, column] == null)
+                    if (map[row, column] is null)
                     {
                         isRowFull = false;
                         break;
                     }
 
-                // radek je plny
-                if (isRowFull)
-                {
-                    DeleteRow(row);
-                    DropRows(row);
-                    CheckRows();
-                }
+                if (!isRowFull)
+                    continue;
+
+                DeleteRow(row);
+                DropRows(row);
+                CheckRows();
             }
-            Console.WriteLine("Row: {0} is full: {1}", startingRow, isRowFull);
         }
 
-        /// <summary>
-        /// Vymaze zadany radek
-        /// </summary>
-        /// <param name="rowNumber"></param>
         private void DeleteRow(int rowNumber)
         {
             for (var column = 0; column < map.GetLength(1); column++)
@@ -680,19 +625,6 @@ namespace Tetris.Logic
             totalNumberOfClearedRows++;
         }
 
-        /// <summary>
-        /// Vymaze radky z mapy, az do zadaneho radku
-        /// </summary>
-        /// <param name="rowNumber"></param>
-        private void DeleteRowsUntil(int rowNumber)
-        {
-            for (var row = 0; row < rowNumber; row++)
-                for (var col = 0; col < map.GetLength(1); col++) map[row, col] = null;
-        }
-
-        /// <summary>
-        /// Posune smerem dolu vsechny radky nad smazanym
-        /// </summary>
         private void DropRows(int rowNumber)
         {
             ClearMap();
@@ -709,10 +641,6 @@ namespace Tetris.Logic
             }
         }
 
-        /// <summary>
-        /// Vypocitava skore, na zaklade najednou odstranenych radku
-        /// </summary>
-        /// <param name="numberOfDroppedRows"></param>
         private void CalculateScore()
         {
             var value = 0;
@@ -732,6 +660,7 @@ namespace Tetris.Logic
                     value = 1200;
                     break;
             }
+
             CurrentScore += value * currentLevel;
             streakOfClearedRows = 0;
         }
@@ -743,13 +672,9 @@ namespace Tetris.Logic
             ShowNewGameDialog();
         }
 
-        /// <summary>
-        /// Zepta se hrace, jestli chce zacit novou hru
-        /// </summary>
         private void ShowNewGameDialog()
         {
-            var result = ShowDialog(
-                "Konec hry, přejete si začít znovu?", "Konec hry");
+            var result = ShowDialog(Strings.MSG_ENDGAME, Strings.TITLE_ENDGAME);
 
             switch (result)
             {
@@ -762,13 +687,9 @@ namespace Tetris.Logic
             }
         }
 
-        /// <summary>
-        /// Zepta se hrace, jestli chce hru vypnout
-        /// </summary>
         private void ShowEndGameDialog()
         {
-            var result = ShowDialog(
-                        "Přejete si hru vypnout?", "Konec hry");
+            var result = ShowDialog(Strings.MSG_QUITGAME, Strings.MSG_ENDGAME);
 
             switch (result)
             {
@@ -781,10 +702,7 @@ namespace Tetris.Logic
             }
         }
 
-        private MessageBoxResult ShowDialog(string msg, string title)
-        {
-            return MessageBox.Show(msg, title, MessageBoxButton.YesNo);
-        }
+        private MessageBoxResult ShowDialog(string msg, string title) => MessageBox.Show(msg, title, MessageBoxButton.YesNo);
 
         #endregion Private Methods
 
