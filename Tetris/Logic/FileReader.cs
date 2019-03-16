@@ -1,61 +1,79 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
+using Tetris.Logic.Constants;
 
-namespace Tetris.Classes {
-    class FileReader {
-        private static FileReader Instance = null;
-        private string path = "score.xml";
-        private XDocument document;
+namespace Tetris.Logic
+{
+    internal class FileReader
+    {
 
-        private FileReader() {
+        #region Fields
+
+        private static FileReader instance;
+
+        #endregion Fields
+
+        #region Constructor
+
+        private FileReader()
+        {
             LoadFile();
         }
 
-        public XDocument Document
+        #endregion Constructor
+
+        #region Properties
+
+        public XDocument Document { get; private set; }
+
+        public static FileReader GetInstance => instance ?? (instance = new FileReader());
+
+        public string Path { get; } = "score.xaml";
+
+        #endregion Properties
+
+        #region Public Methods
+
+        public int? GetNumberOfRecords()
         {
-            get { return this.document; }
+            LoadFile();
+            var countOfDescendants = Document?.Descendants(StringConstants.XML_PLAYER_TAG).Count();
+
+            if (countOfDescendants is null)
+                throw new ArgumentNullException($"{nameof(Document)} is null.");
+
+            return countOfDescendants;
         }
 
-        public static FileReader GetInstance
+        #endregion Public Methods
+
+        #region Private Methods
+        
+        private void LoadFile()
         {
-            get
+            try
             {
-                if (Instance == null) {
-                    Instance = new FileReader();
-                }
-                return Instance;
+                Document = XDocument.Load(Path);
+            }
+            catch (FileNotFoundException)
+            {
+                CreateFile();
             }
         }
 
-        public string Path
+        private void CreateFile()
         {
-            get { return this.path; }
+            Document = new XDocument(
+                    new XDeclaration(
+                        StringConstants.XML_VERSION, 
+                        StringConstants.XML_ENCODING, 
+                        StringConstants.XML_STANDALONE_TRUE),
+                    new XElement(StringConstants.XML_ELEMENT_PLAYERS));
+            Document.Save(Path);
         }
 
-        public int GetNumberOfRecords() {
-            this.LoadFile();
-            return this.document.Descendants("player").Count();
-        }
-
-        private void LoadFile() {
-            try {
-                document = XDocument.Load(path);
-            } catch (FileNotFoundException e) {
-                this.CreateFile();
-            }
-        }
-
-        private void CreateFile() {
-            document = new XDocument(
-                    new XDeclaration("1.0", "utf-8", "true"),
-                    new XElement("players"));
-            document.Save(path);
-            Console.WriteLine("File created");
-        }
+        #endregion Private Methods
     }
 }

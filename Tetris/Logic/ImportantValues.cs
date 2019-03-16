@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tetris {
+﻿namespace Tetris
+{
     public static class ImportantValues {
-        private const int BlockSize = 40;
+        private const int BLOCK_SIZE = 40;
 
-        public static int Size
-        {
-            get { return BlockSize; }
-        }
+        public static int Size => BLOCK_SIZE;
     }
 }

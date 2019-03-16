@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Tetris.Annotations;
-using Tetris.Classes;
+using Tetris.Logic;
 using Tetris.Logic.Converters;
 
 namespace Tetris.ViewModels
