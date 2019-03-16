@@ -58,7 +58,7 @@ namespace Tetris.Models.Shapes
             Part1.Position = Position;
             Part2.Position = new Position(Part1.Position.Row, Part1.Position.Column + 1);
             Part3.Position = new Position(Part1.Position.Row, Part1.Position.Column + 2);
-            Part4.Position = new Position(Part1.Position.Row, Part1.Position.Column);
+            Part4.Position = new Position(Part1.Position.Row + 1, Part1.Position.Column);
         }
 
         protected override void ChangeRotationToRotatedTwice()
