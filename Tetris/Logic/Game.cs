@@ -405,7 +405,7 @@ namespace Tetris.Logic
         /// V kazdem ticku se posune objekt na danou souradnici
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="e"></param> 
         private void DropTimer_Tick(object sender, EventArgs e)
         {
             MoveShape(controlableShape, Orientation.Vertical, moveDistance);

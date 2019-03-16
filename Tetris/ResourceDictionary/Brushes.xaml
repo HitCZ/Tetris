@@ -4,5 +4,6 @@
     <SolidColorBrush x:Key="BlueBackgroundBrush">#38bcfd</SolidColorBrush>
     <SolidColorBrush x:Key="PauseMenuItemHighlightBrush">White</SolidColorBrush>
     <SolidColorBrush x:Key="MainMenuItemHighlightBrush">Blue</SolidColorBrush>
+    <SolidColorBrush x:Key="MenuItemDefaultColor">Black</SolidColorBrush>
 
 </ResourceDictionary>
