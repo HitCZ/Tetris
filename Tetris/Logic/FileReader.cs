@@ -30,7 +30,7 @@ namespace Tetris.Logic
 
         public static FileReader GetInstance => instance ?? (instance = new FileReader());
 
-        public string Path { get; } = "score.xaml";
+        public string Path { get; } = "score.xml";
 
         #endregion Properties
 
