@@ -7,17 +7,16 @@ namespace Tetris.Logic.Providers
     public static class ShapeProvider
     {
 
-        public static Shape GetRandomShape(int row, int column)
+        public static Shape GetRandomShape(Position position)
         {
             var random = new Random();
             var values = Enum.GetValues(typeof(ShapeType));
             var randomIndex = random.Next(values.Length);
             var randomShapeType = (ShapeType)values.GetValue(randomIndex);
 
-            return ShapeFactory.GetShape(randomShapeType, row, column);
+            return ShapeFactory.GetShape(randomShapeType, position);
         }
 
-        public static Shape GetConcreteShape(ShapeType type, int row, int column)
-            => ShapeFactory.GetShape(type, row, column);
+        public static Shape GetConcreteShape(ShapeType type, Position position) => ShapeFactory.GetShape(type, position);
     }
 }

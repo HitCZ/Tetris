@@ -64,6 +64,7 @@
     <Compile Include="Logic\FileReader.cs" />
     <Compile Include="Logic\FileWriter.cs" />
     <Compile Include="Logic\MenuManager.cs" />
+    <Compile Include="Logic\Position.cs" />
     <Compile Include="Logic\Providers\ColorProvider.cs" />
     <Compile Include="Logic\Providers\ShapeProvider.cs" />
     <Compile Include="Logic\RelayCommand.cs" />

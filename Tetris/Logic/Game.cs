@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Tetris.Annotations;
 using Tetris.Logic.Enums;
+using Tetris.Logic.Providers;
 using Tetris.Models;
 using Tetris.Models.Shapes;
 using Tetris.ViewModels;
@@ -33,8 +34,8 @@ namespace Tetris.Logic
         private List<Block> listOfBlocks;
         private DispatcherTimer dropTimer;
         //private string playerName;
-        private int row = 2;
-        private int column = 4;
+        private int startingRow = 2;
+        private int startingColumn = 4;
         private int currentLevel = 1;
         private int streakOfClearedRows = 0;
         private int totalNumberOfClearedRows;
@@ -51,11 +52,6 @@ namespace Tetris.Logic
         #region Properties
 
         /// <summary>
-        /// Gets or sets 
-        /// </summary>
-        //public Block[,] Map { get; private set; }
-
-        /// <summary>
         /// Gets or sets the current score.
         /// </summary>
         public int CurrentScore
@@ -67,7 +63,6 @@ namespace Tetris.Logic
                 currentCurrentScore = value;
                 GameScoreChangedAction(value);
                 OnPropertyChanged(nameof(CurrentScore));
-                //mainWindow.txtScoreValue.Text = currentCurrentScore.ToString();
             }
         }
 
@@ -81,7 +76,6 @@ namespace Tetris.Logic
             {
                 currentLevel = value;
                 GameLevelChangedAction(value);
-                //mainWindow.txtLevelValue.Text = currentLevel.ToString();
                 OnPropertyChanged(nameof(CurrentLevel));
             }
         }
@@ -130,30 +124,89 @@ namespace Tetris.Logic
 
         #region Constructor
 
-        public Game()
-        {
-            Initialize();
-            InitializeCommands();
-        }
-
         /// <summary/>
         public Game(MainViewModel mainViewModel, int numberOfRows, int numberOfColumns, string playerName)
         {
             this.mainViewModel = mainViewModel;
-            //this.mainViewModel.Score = Score;
-            //this.mainWindow.txtLevelValue.DataContext = this;
             this.numberOfRows = numberOfRows;
             this.numberOfColumns = numberOfColumns;
             this.playerName = playerName;
 
             Initialize();
             InitializeCommands();
-            //StartNewGame();
-            //var w = new FileWriter();
-
         }
 
         #endregion Constructor
+
+        #region Public Methods
+
+
+        /// <summary>
+        /// Starts new game
+        /// </summary>
+        public void StartNewGame()
+        {
+            Reset();
+            mainViewModel.RemoveBlur();
+            controlableShape = SpawnNewShape(new Position(startingRow, startingColumn));
+            AddShapeToGame(controlableShape);
+
+            nextShape = SpawnNewShape(new Position(startingRow, startingColumn));
+            AddShapeToNextShapeGrid(nextShape);
+
+            dropTimer.Start();
+        }
+
+        /// <summary>
+        /// Pauses the game and displays the Pause Menu
+        /// </summary>
+        public void Pause()
+        {
+            paused = true;
+            dropTimer.Stop();
+            mainViewModel.AddBlur();
+        }
+
+        /// <summary>
+        /// Resumes the game
+        /// </summary>
+        public void Resume()
+        {
+            paused = false;
+            mainViewModel.RemoveBlur();
+            dropTimer.Start();
+        }
+
+        /// <summary>
+        /// Terminates the application
+        /// </summary>
+        public void Exit() => Application.Current.Shutdown();
+
+        /// <summary>
+        /// Creates a record in the XML file
+        /// </summary>
+        public void CreateRecord()
+        {
+            var r = new Record(playerName, currentCurrentScore, totalNumberOfClearedRows, currentLevel);
+
+            if (writer is null)
+                writer = new FileWriter();
+
+            writer.Write(r);
+        }
+
+        /// <summary>
+        /// Adds the given shape to the list of game objects
+        /// </summary>
+        public void AddBlocksToList(Shape shape)
+        {
+            foreach (var block in shape.ListOfParts)
+            {
+                listOfBlocks.Add(block);
+            }
+        }
+
+        #endregion Public Methods
 
         #region Private Methods
 
@@ -204,24 +257,12 @@ namespace Tetris.Logic
             ShowMainMenu();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         private void Initialize()
         {
             random = new Random();
             listOfShapeTypes = new List<ShapeType>();
-            AddShapeTypesToList();
-            //mainWindow.KeyDown += PlayerInput;
             listOfBlocks = new List<Block>();
             currentDropTimerInterval = startingTimerInterval;
-
-            //// pocet radku v gridu
-            //var numberOfRows = mainWindow.gameGrid.RowDefinitions.Count;
-
-            //// pocet sloupcu v gridu
-            //var numberOfColumns = mainWindow.gameGrid.ColumnDefinitions.Count;
-
             map = new Block[numberOfRows, numberOfColumns];
 
             DropTimerInit();
@@ -233,12 +274,6 @@ namespace Tetris.Logic
             pauseMenu.Show();
         }
 
-        /// <summary>
-        /// Resetuje vychozi hodnoty hry
-        /// - vycisteni mapy
-        /// - vynulovani skore
-        /// - navrat do prvni urovne
-        /// </summary>
         private void Reset()
         {
             CurrentScore = 0;
@@ -251,76 +286,6 @@ namespace Tetris.Logic
             ClearMap();
         }
 
-        #endregion Private Methods
-
-        #region Public Methods
-
-        /// <summary>
-        /// Starts new game
-        /// </summary>
-        public void StartNewGame()
-        {
-            Reset();
-            mainViewModel.RemoveBlur();
-            controlableShape = SpawnNewShape(row, column);
-            AddShapeToGame(controlableShape);
-
-            nextShape = SpawnNewShape(row, column);
-            AddShapeToNextShapeGrid(nextShape);
-
-            dropTimer.Start();
-        }
-
-        #endregion Public Methods
-
-        
-
-        /// <summary>
-        /// Zapauzuje hru a zobrazi pauzovaci nabidku
-        /// </summary>
-        public void Pause()
-        {
-            paused = true;
-            dropTimer.Stop();
-            mainViewModel.AddBlur();
-        }
-
-        /// <summary>
-        /// Pokracovani ve hre
-        /// </summary>
-        public void Resume()
-        {
-            paused = false;
-            mainViewModel.RemoveBlur();
-            dropTimer.Start();
-        }
-
-        /// <summary>
-        /// Ukonci aplikaci
-        /// </summary>
-        public void Exit()
-        {
-            Application.Current.Shutdown();
-        }
-
-        /// <summary>
-        /// Vytvori zaznam v XML souboru
-        /// </summary>
-        public void CreateRecord()
-        {
-            var r = new Record(
-                playerName,
-                currentCurrentScore,
-                totalNumberOfClearedRows,
-                currentLevel);
-
-            if (writer == null)
-                writer = new FileWriter();
-            writer.Write(r);
-        }
-        /// <summary>
-        /// Postup do dalsi urovne, zrychleni posouvani objektu
-        /// </summary>
         private void LevelUp()
         {
             totalNumberOfClearedRows = 0;
@@ -335,197 +300,101 @@ namespace Tetris.Logic
                 currentDropTimerInterval -= 49;
             else if (currentDropTimerInterval <= 1) GameOver();
 
-            dropTimer.Interval =
-                TimeSpan.FromMilliseconds(currentDropTimerInterval);
-
-            Console.WriteLine("Interval: " + dropTimer.Interval);
-        }
-
-        /// <summary>
-        /// Prida Shape do seznamu hernich objektu
-        /// </summary>
-        /// <param name="shape">Pridavany objekt</param>
-        public void AddBlocksToList(Shape shape)
-        {
-            foreach (var block in shape.ListOfParts) listOfBlocks.Add(block);
-        }
-
-        /// <summary>
-        /// Odstrani zadany shape ze seznamu hernich objektu
-        /// </summary>
-        /// <param name="shape">Odebirany objekt</param>
-        public void RemoveGameObject(Shape shape)
-        {
-            foreach (var block in shape.ListOfParts) listOfBlocks.Remove(block);
-        }
-
-        /// <summary>
-        /// Generuje nahodne cislo radku
-        /// </summary>
-        /// <returns>Nahodne cislo radku</returns>
-        private int RandomColumn()
-        {
-            return random.Next(1, map.GetLength(1) - 3);
+            dropTimer.Interval = TimeSpan.FromMilliseconds(currentDropTimerInterval);
         }
 
         private void ClearMap()
         {
             for (var i = 0; i < map.GetLength(0); i++)
-                for (var j = 0; j < map.GetLength(1); j++) map[i, j] = null;
+            {
+                for (var j = 0; j < map.GetLength(1); j++)
+                {
+                    map[i, j] = null;
+                }
+            }
         }
 
         private void AddShapeToNextShapeGrid(Shape shape)
         {
-            //mainViewModel.gridNextShape.Children.Clear();
             mainViewModel.ClearNextShapeGridAction();
 
-            if (shape != null)
-                for (var row = 0; row < shape.ComposedShape.GetLength(0); row++)
-                    for (var col = 0; col < shape.ComposedShape.GetLength(1); col++)
-                        if (shape.ComposedShape[row, col] != null)
-                        {
-                            Grid.SetRow(shape.ComposedShape[row, col].Border, row);
-                            Grid.SetColumn(shape.ComposedShape[row, col].Border, col);
-                            mainViewModel.AddBlockToNextShapeGridAction.Invoke(shape.ComposedShape[row, col].Border);
-                            //mainWindow.gridNextShape.Children.Add(shape.ComposedShape[row, col].Border);
-                        }
+            if (shape is null)
+                return;
+
+            for (var rowIndex = 0; rowIndex < shape.ComposedShape.GetLength(0); rowIndex++)
+            {
+                for (var columnIndex = 0; columnIndex < shape.ComposedShape.GetLength(1); columnIndex++)
+                {
+                    if (shape.ComposedShape[rowIndex, columnIndex] is null)
+                        continue;
+
+                    Grid.SetRow(shape.ComposedShape[rowIndex, columnIndex].Border, rowIndex);
+                    Grid.SetColumn(shape.ComposedShape[rowIndex, columnIndex].Border, columnIndex);
+                    mainViewModel.AddBlockToNextShapeGridAction.Invoke(shape.ComposedShape[rowIndex, columnIndex].Border);
+                }
+            }
         }
 
-        /// <summary>
-        /// Inicializace casovace, ktery zajistuje padani objektu
-        /// </summary>
         private void DropTimerInit()
         {
-            dropTimer = new DispatcherTimer(DispatcherPriority.Render);
-            dropTimer.Interval = TimeSpan.FromMilliseconds(startingTimerInterval);
+            dropTimer = new DispatcherTimer(DispatcherPriority.Render)
+            {
+                Interval = TimeSpan.FromMilliseconds(startingTimerInterval)
+            };
             dropTimer.Tick += DropTimer_Tick;
         }
 
-        /// <summary>
-        /// V kazdem ticku se posune objekt na danou souradnici
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param> 
         private void DropTimer_Tick(object sender, EventArgs e)
         {
             MoveShape(controlableShape, Orientation.Vertical, moveDistance);
         }
 
-        /// <summary>
-        /// Zpracovava vstup od hrace, pokud zmackne jednu z povolenych klaves,
-        /// odstrani se aktualni obrazec, provede se odpovidajici akce a obrazec
-        /// se opet prida do mapy, nasledne se aktualizuje herni obrazovka.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PlayerInput(object sender, KeyEventArgs e)
-        {
-            if (!paused)
-                if (controlableShape != null)
-                    switch (e.Key)
-                    {
-                        case Key.Space:
-                            RotateShape(controlableShape);
-                            break;
-                        case Key.Right:
-                            MoveShape(controlableShape, Orientation.Horizontal, moveDistance);
-                            break;
-                        case Key.Down:
-                            MoveShape(controlableShape, Orientation.Vertical, moveDistance);
-                            break;
-                        case Key.Left:
-                            MoveShape(controlableShape, Orientation.Horizontal, -moveDistance);
-                            break;
-                        case Key.Escape:
-                            Pause();
-                            ShowMainMenu();
-                            break;
-                    }
-        }
+        private void UpdateGame() => RefreshGrid();
 
-        /// <summary>
-        /// Aktualizuje hru a herni mapu
-        /// </summary>
-        private void UpdateGame()
-        {
-            RefreshGrid();
-        }
-
-        /// <summary>
-        /// Do herni mrizky priradi bordery jednotlivych bloku
-        /// </summary>
         private void RefreshGrid()
         {
-            //mainWindow.gameGrid.Children.Clear();
             mainViewModel.ClearGameGridAction();
 
             foreach (var block in listOfBlocks)
             {
-                Grid.SetRow(block.Border, block.Row);
-                Grid.SetColumn(block.Border, block.Column);
+                Grid.SetRow(block.Border, block.Position.Row);
+                Grid.SetColumn(block.Border, block.Position.Column);
 
-                //mainWindow.gameGrid.Children.Add(block.Border);
                 mainViewModel.AddBlockToGameGridAction(block.Border);
             }
         }
 
-        /// <summary>
-        /// Naplni seznam vsemi tvary, ktere se mohou ve hre vysktnout
-        /// </summary>
-        private void AddShapeTypesToList()
-        {
-            listOfShapeTypes.Add(ShapeType.ShapeL);
-            listOfShapeTypes.Add(ShapeType.ShapeLInverted);
-            listOfShapeTypes.Add(ShapeType.ShapeI);
-            listOfShapeTypes.Add(ShapeType.ShapeO);
-            listOfShapeTypes.Add(ShapeType.ShapeZ);
-            listOfShapeTypes.Add(ShapeType.ShapeS);
-            listOfShapeTypes.Add(ShapeType.ShapeT);
-        }
-
-        /// <summary>
-        /// Vygeneruje soucasny a nasledujici objekt a prida je do odpovidajicich
-        /// gridu
-        /// </summary>
         private void SpawnShapes()
         {
-            //mainWindow.gridNextShape.Children.Clear();
             mainViewModel.ClearNextShapeGridAction();
             controlableShape = nextShape;
             AddShapeToGame(controlableShape);
-            nextShape = SpawnNewShape(row, column);
+            nextShape = SpawnNewShape(new Position(startingRow, startingColumn));
             AddShapeToNextShapeGrid(nextShape);
         }
 
-        /// <summary>
-        /// Prida do hry novy herni objekt
-        /// </summary>
-        private Shape SpawnNewShape(int row, int column)
+        // ReSharper disable once ParameterHidesMember
+        // ReSharper disable once ParameterHidesMember
+        private Shape SpawnNewShape(Position position)
         {
-            Console.WriteLine("X: {0} : Y: {1}", column, row);
-            Console.WriteLine("New shape spawned");
-
-            // vytvori nahodny objekt
-            var newShape = GetRandomShape(row, column);
-            ChooseRandomRotation(newShape);
+            var newShape = ShapeProvider.GetRandomShape(position);
+            RandomlyRotateShape(newShape);
 
             return newShape;
         }
 
-        /// <summary>
-        /// Nekolikrat (nahodne) zrotuje objekt.
-        /// </summary>
-        /// <param name="shape"></param>
-        private void ChooseRandomRotation(Shape shape)
+        private void RandomlyRotateShape(Shape shape)
         {
-            if (shape != null)
+            if (shape is null)
+                return;
+
+            var range = random.Next(10);
+
+            for (var i = 0; i < range; i++)
             {
-                var range = random.Next(10);
-                // na zaklade nahodneho cisla zrotuje objekt
-                for (var i = 0; i < range; i++) shape.Rotate();
+                shape.Rotate();
             }
         }
-
 
         private void AddShapeToGame(Shape shape)
         {
@@ -534,55 +403,14 @@ namespace Tetris.Logic
             UpdateGame();
         }
 
-        private Shape GetConcreteShape(ShapeType type, int row, int column)
-        {
-            Shape newShape = null;
-
-            switch (type)
-            {
-                case ShapeType.ShapeL:
-                    newShape = new ShapeL(row, column);
-                    break;
-                case ShapeType.ShapeLInverted:
-                    newShape = new ShapeLInverted(row, column);
-                    break;
-                case ShapeType.ShapeI:
-                    newShape = new ShapeI(row, column);
-                    break;
-                case ShapeType.ShapeO:
-                    newShape = new ShapeO(row, column);
-                    break;
-                case ShapeType.ShapeZ:
-                    newShape = new ShapeZ(row, column);
-                    break;
-                case ShapeType.ShapeS:
-                    newShape = new ShapeS(row, column);
-                    break;
-                case ShapeType.ShapeT:
-                    newShape = new ShapeT(row, column);
-                    break;
-            }
-
-            return newShape;
-        }
-
-        private Shape GetRandomShape(int row, int column)
-        {
-            var randomIndex = random.Next(listOfShapeTypes.Count);
-            var randomShapeType = listOfShapeTypes[randomIndex];
-
-            return GetConcreteShape(randomShapeType, row, column);
-        }
-
         private void AddBlockToMap(Block block)
         {
-            map[block.Row, block.Column] = block;
+            map[block.Position.Row, block.Position.Column] = block;
         }
-
 
         private void RemoveBlockFromMap(Block block)
         {
-            map[block.Row, block.Column] = null;
+            map[block.Position.Row, block.Position.Column] = null;
         }
 
         private void RemoveBlockFromGrid(Block block)
@@ -604,7 +432,10 @@ namespace Tetris.Logic
         /// <param name="shape">Objekt pro pridani do mapy</param>
         private void AddShapeToMap(Shape shape)
         {
-            foreach (var part in shape.ListOfParts) map[part.Row, part.Column] = part;
+            foreach (var part in shape.ListOfParts)
+            {
+                map[part.Position.Row, part.Position.Column] = part;
+            }
         }
 
         /// <summary>
@@ -614,7 +445,10 @@ namespace Tetris.Logic
         /// <param name="shape">Obrazec pro odstraneni</param>
         private void RemoveShapeFromMap(Shape shape)
         {
-            foreach (var part in shape.ListOfParts) map[part.Row, part.Column] = null;
+            foreach (var part in shape.ListOfParts)
+            {
+                map[part.Position.Row, part.Position.Column] = null;
+            }
         }
 
         /// <summary>
@@ -640,36 +474,21 @@ namespace Tetris.Logic
             RemoveShapeFromGrid(shape);
         }
 
-        /// <summary>
-        /// Zkotroluje, zda nedoslo ke kolizi, pokud ne, 
-        /// odstrani puvodni objekt z mapy, zmeni jeho pozici a opet ho do mapy 
-        /// prida.
-        /// </summary>
-        /// <param name="shape">Objekt pro posun</param>
-        /// <param name="orientation">Orientace - vertikalni/horizontalni</param>
-        /// <param name="distance">Vzdalenost posunu</param>
         private void MoveShape(Shape shape, Orientation orientation, int distance)
         {
-            if (shape != null)
-            {
-                CheckMovementCollision(shape, orientation, distance);
+            if (shape == null)
+                return;
+            CheckMovementCollision(shape, orientation, distance);
 
-                if (!collisionDetected)
-                {
-                    RemoveShape(shape);
-                    shape.Move(orientation, distance);
-                    AddShapeToMap(shape);
-                    UpdateGame();
-                }
-                Console.WriteLine("MAX ROW: " + (map.GetLength(0) - 1));
-                Console.WriteLine("ROW: " + shape.Row + " Column: " + shape.Column);
-            }
+            if (collisionDetected)
+                return;
+
+            RemoveShape(shape);
+            shape.Move(orientation, distance);
+            AddShapeToMap(shape);
+            UpdateGame();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="shape"></param>
         private void CheckMovementCollision(Shape shape, Orientation orientation, int distance)
         {
             collisionDetected = false;
@@ -678,35 +497,28 @@ namespace Tetris.Logic
                 switch (orientation)
                 {
                     case Orientation.Horizontal:
-                        if (part.Column + distance < 0
-                            || part.Column + distance
-                            > map.GetLength(1) - 1)
+                        if (part.Position.Column + distance < 0 || part.Position.Column + distance > map.GetLength(1) - 1)
                         {
                             collisionDetected = true;
-                            break;
                         }
-                        else if (map[part.Row, part.Column + distance] != null)
+                        else if (map[part.Position.Row, part.Position.Column + distance] != null)
                         {
-                            if (map[part.Row, part.Column + distance] != shape.Part1
-                                && map[part.Row, part.Column + distance] != shape.Part2
-                                && map[part.Row, part.Column + distance] != shape.Part3
-                                && map[part.Row, part.Column + distance] != shape.Part4)
+                            if (map[part.Position.Row, part.Position.Column + distance] != shape.Part1
+                                && map[part.Position.Row, part.Position.Column + distance] != shape.Part2
+                                && map[part.Position.Row, part.Position.Column + distance] != shape.Part3
+                                && map[part.Position.Row, part.Position.Column + distance] != shape.Part4)
                             {
                                 collisionDetected = true;
-
-                                break;
                             }
                         }
                         break;
                     case Orientation.Vertical:
-                        if (part.Row + distance < 0)
+                        if (part.Position.Row + distance < 0)
                         {
                             collisionDetected = true;
-                            break;
                         }
-                        // kolize se spodnim krajem obrazovky
                         else if (
-                            part.Row + distance > map.GetLength(0) - 1)
+                            part.Position.Row + distance > map.GetLength(0) - 1)
                         {
                             collisionDetected = true;
                             CheckRows();
@@ -715,12 +527,12 @@ namespace Tetris.Logic
                             return;
                         }
                         else if
-                            (map[part.Row + distance, part.Column] != null)
+                            (map[part.Position.Row + distance, part.Position.Column] != null)
                         {
-                            if (map[part.Row + distance, part.Column] != shape.Part1
-                                && map[part.Row + distance, part.Column] != shape.Part2
-                                && map[part.Row + distance, part.Column] != shape.Part3
-                                && map[part.Row + distance, part.Column] != shape.Part4)
+                            if (   map[part.Position.Row + distance, part.Position.Column] != shape.Part1
+                                && map[part.Position.Row + distance, part.Position.Column] != shape.Part2
+                                && map[part.Position.Row + distance, part.Position.Column] != shape.Part3
+                                && map[part.Position.Row + distance, part.Position.Column] != shape.Part4)
                             {
                                 collisionDetected = true;
 
@@ -735,53 +547,51 @@ namespace Tetris.Logic
                 }
         }
 
-        /// <summary>
-        /// Zkontroluje, zda po rotaci nezasahuje objekt mimo herni obrazovku
-        /// </summary>
-        /// <param name="shape"></param>
         private void CheckRotationCollision(Shape shape)
         {
             collisionDetected = false;
 
             foreach (var part in shape.ListOfParts)
-                if (part.Row < 0
-                    || part.Row > map.GetLength(0) - 1)
+                if (part.Position.Row < 0 || part.Position.Row > map.GetLength(0) - 1)
                 {
                     collisionDetected = true;
                     break;
                 }
-                else if (part.Column < 0)
+                else if (part.Position.Column < 0)
                 {
                     collisionDetected = true;
                 }
-                else if (part.Column >= map.GetLength(1) - 1)
+                else if (part.Position.Column >= map.GetLength(1) - 1)
                 {
                     collisionDetected = true;
                 }
-                else if (map[part.Row, part.Column] != null)
+                else if (map[part.Position.Row, part.Position.Column] != null)
                 {
-                    if (map[part.Row, part.Column] != shape.Part1
-                        && map[part.Row, part.Column] != shape.Part2
-                        && map[part.Row, part.Column] != shape.Part3
-                        && map[part.Row, part.Column] != shape.Part4)
-                    {
-                        collisionDetected = true;
+                    if (map[part.Position.Row, part.Position.Column] == shape.Part1 || 
+                        map[part.Position.Row, part.Position.Column] == shape.Part2 ||
+                        map[part.Position.Row, part.Position.Column] == shape.Part3 ||
+                        map[part.Position.Row, part.Position.Column] == shape.Part4)
+                        continue;
 
-                        break;
-                    }
+                    collisionDetected = true;
+
+                    break;
                 }
         }
 
-        /// <summary>
-        /// Odstrani zadany objekt z mapy, otoci ho, zkontroluje, zda nedochazi
-        /// ke kolizi a opet ho prida do mapy, nakonec aktualizuje hru
-        /// </summary>
-        /// <param name="shape"></param>
         private void RotateShape(Shape shape)
         {
             if (shape != null)
             {
                 var previousRotation = shape.RotationState;
+
+                var previousPartsPositions = new[]
+                {
+                    shape.Part1.Position,
+                    shape.Part2.Position,
+                    shape.Part3.Position,
+                    shape.Part4.Position
+                };
 
                 RemoveShape(shape);
 
@@ -789,7 +599,14 @@ namespace Tetris.Logic
                 CheckRotationCollision(shape);
 
                 // pokud objekt zasahuje mimo herni pole, vrati se puvodni stav
-                if (collisionDetected) shape.ChangeRotationState(previousRotation);
+                if (collisionDetected)
+                {
+                    shape.ChangeRotationState(previousRotation);
+                    shape.Part1.Position = previousPartsPositions[0];
+                    shape.Part2.Position = previousPartsPositions[1];
+                    shape.Part3.Position = previousPartsPositions[2];
+                    shape.Part4.Position = previousPartsPositions[3];
+                }
 
                 AddShapeToMap(shape);
                 UpdateGame();
@@ -844,7 +661,7 @@ namespace Tetris.Logic
                     CheckRows();
                 }
             }
-            Console.WriteLine("Row: {0} is full: {1}", row, isRowFull);
+            Console.WriteLine("Row: {0} is full: {1}", startingRow, isRowFull);
         }
 
         /// <summary>
@@ -882,7 +699,12 @@ namespace Tetris.Logic
 
             foreach (var block in listOfBlocks)
             {
-                if (block.Row < rowNumber) block.Row++;
+                if (block.Position.Row < rowNumber)
+                {
+                    var blockPosition = block.Position;
+                    blockPosition.Row++;
+                    block.Position = blockPosition;
+                }
                 AddBlockToMap(block);
             }
         }
@@ -964,6 +786,10 @@ namespace Tetris.Logic
             return MessageBox.Show(msg, title, MessageBoxButton.YesNo);
         }
 
+        #endregion Private Methods
+
+        #region INotifyPropertyChanged Members
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
@@ -971,5 +797,7 @@ namespace Tetris.Logic
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion INotifyPropertyChanged Members
     }
 }

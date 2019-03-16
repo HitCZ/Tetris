@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Media;
+using Tetris.Logic;
 using Tetris.Logic.Enums;
 using Tetris.Logic.Providers;
 
@@ -11,16 +12,20 @@ namespace Tetris.Models.Shapes
     /// </summary>
     public abstract class Shape
     {
+        #region Fields
+
+        private Position position;
+
+        #endregion Fields
 
         #region Constructors
 
         /// <summary>
         /// Initializes reference to the main view and sets random color.
         /// </summary>
-        protected Shape(int row, int column)
+        protected Shape(Position position)
         {
-            Row = row;
-            Column = column;
+            Position = position;
 
             ListOfParts = new List<Block>();
             Color = ColorProvider.GetRandomBrush();
@@ -102,15 +107,10 @@ namespace Tetris.Models.Shapes
         /// </summary>
         public List<Block> ListOfParts { get; }
 
-        /// <summary>
-        /// Gets or sets the row position.
-        /// </summary>
-        public int Row { get; set; }
-
-        /// <summary>
-        /// Gets or sets the column position.
-        /// </summary>
-        public int Column { get; set; }
+        public Position Position {
+            get => position;
+            set => position = value;
+        }
 
         /// <summary>
         /// Gets or sets the number of possible rotations.
@@ -176,21 +176,27 @@ namespace Tetris.Models.Shapes
 
         private void MoveHorizontally(int distance)
         {
-            Column += distance;
+            position.Column += distance;
 
             foreach (var part in ListOfParts)
             {
-                part.Column += distance;
+                var partPosition = part.Position;
+                partPosition.Column += distance;
+
+                part.Position = partPosition;
             }
         }
 
         private void MoveVertically(int distance)
         {
-            Row += distance;
+            position.Row += distance;
 
             foreach (var part in ListOfParts)
             {
-                part.Row += distance;
+                var partPosition = part.Position;
+                partPosition.Row += distance;
+
+                part.Position = partPosition;
             }
         }
 

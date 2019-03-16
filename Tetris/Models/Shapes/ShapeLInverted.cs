@@ -1,4 +1,5 @@
-﻿using Tetris.Logic.Enums;
+﻿using Tetris.Logic;
+using Tetris.Logic.Enums;
 
 namespace Tetris.Models.Shapes
 {
@@ -7,7 +8,7 @@ namespace Tetris.Models.Shapes
 
         #region Constructor
 
-        public ShapeLInverted(int row, int column) : base(row, column)
+        public ShapeLInverted(Position position) : base(position)
         {
             Initialize();
         }
@@ -35,17 +36,10 @@ namespace Tetris.Models.Shapes
                     { null,       null,        null,       null }
                 };
 
-            Part1.Row = Row;
-            Part1.Column = Column;
-
-            Part2.Row = Part1.Row + 1;
-            Part2.Column = Part1.Column;
-
-            Part3.Row = Part1.Row + 2;
-            Part3.Column = Part1.Column - 1;
-
-            Part4.Row = Part1.Row + 2;
-            Part4.Column = Part1.Column;
+            Part1.Position = Position;
+            Part2.Position = new Position(Part1.Position.Row + 1, Part1.Position.Column);
+            Part3.Position = new Position(Part1.Position.Row + 2, Part1.Position.Column - 1);
+            Part4.Position = new Position(Part1.Position.Row + 2, Part1.Position.Column);
         }
 
         protected override void ChangeRotationToRotatedOnce()
@@ -60,17 +54,10 @@ namespace Tetris.Models.Shapes
                     { null,        null,       null,       null }
                 };
 
-            Part1.Row = Row + 1;
-            Part1.Column = Column - 1;
-
-            Part2.Row = Part1.Row + 1;
-            Part2.Column = Part1.Column;
-
-            Part3.Row = Part1.Row + 1;
-            Part3.Column = Part1.Column + 1;
-
-            Part4.Row = Part1.Row + 1;
-            Part4.Column = Part1.Column + 2;
+            Part1.Position = new Position(Position.Row + 1, Position.Column - 1);
+            Part2.Position = new Position(Part1.Position.Row + 1, Part1.Position.Column);
+            Part3.Position = new Position(Part1.Position.Row + 1, Part1.Position.Column + 1);
+            Part4.Position = new Position(Part1.Position.Row + 1, Part1.Position.Column + 2);
         }
 
         protected override void ChangeRotationToRotatedTwice()
@@ -85,17 +72,10 @@ namespace Tetris.Models.Shapes
                     { null,       null,        null,        null }
                 };
 
-            Part1.Row = Row;
-            Part1.Column = Column - 1;
-
-            Part2.Row = Part1.Row;
-            Part2.Column = Part1.Column + 1;
-
-            Part3.Row = Part1.Row + 1;
-            Part3.Column = Part1.Column;
-
-            Part4.Row = Part1.Row + 2;
-            Part4.Column = Part1.Column;
+            Part1.Position = new Position(Position.Row, Position.Column - 1);
+            Part2.Position = new Position(Part1.Position.Row, Part1.Position.Column + 1);
+            Part3.Position = new Position(Part1.Position.Row + 1, Part1.Position.Column);
+            Part4.Position = new Position(Part1.Position.Row + 2, Part1.Position.Column);
         }
 
         protected override void ChangeRotationToRotatedThreeTimes()
@@ -110,17 +90,10 @@ namespace Tetris.Models.Shapes
                     { null,       null,       null,       null }
                 };
 
-            Part1.Row = Row;
-            Part1.Column = Column - 1;
-
-            Part2.Row = Part1.Row;
-            Part2.Column = Part1.Column + 1;
-
-            Part3.Row = Part1.Row;
-            Part3.Column = Part1.Column + 2;
-
-            Part4.Row = Part1.Row + 1;
-            Part4.Column = Part1.Column + 2;
+            Part1.Position = new Position(Position.Row, Position.Column - 1);
+            Part2.Position = new Position(Part1.Position.Row, Part1.Position.Column + 1);
+            Part3.Position = new Position(Part1.Position.Row, Part1.Position.Column + 2);
+            Part4.Position = new Position(Part1.Position.Row + 1, Part1.Position.Column + 2);
         }
 
         #endregion Overriden Methods

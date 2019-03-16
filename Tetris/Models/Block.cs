@@ -1,6 +1,7 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Tetris.Logic;
 
 namespace Tetris.Models {
     /// <summary>
@@ -83,23 +84,7 @@ namespace Tetris.Models {
             get { return this.rectangle; }
         }
 
-        /// <summary>
-        /// Vraci a nastavuje X souradnici
-        /// </summary>
-        public int Row
-        {
-            get { return this.row; }
-            set { this.row = value; }
-        }
-
-        /// <summary>
-        /// Vraci a nastavuje Y souradnici
-        /// </summary>
-        public int Column
-        {
-            get { return this.column; }
-            set { this.column = value; }
-        }
+        public Position Position { get; set; }
 
         public Brush Color
         {
