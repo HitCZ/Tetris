@@ -7,7 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Tetris.Annotations;
-using Tetris.Logic.Enums;
 using Tetris.Logic.Providers;
 using Tetris.Models;
 using Tetris.Models.Shapes;
