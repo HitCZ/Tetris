@@ -36,7 +36,7 @@ namespace Tetris.Logic
 
         #region Public Methods
 
-        public int? GetNumberOfRecords()
+        public int GetNumberOfRecords()
         {
             LoadFile();
             var countOfDescendants = Document?.Descendants(StringConstants.XML_PLAYER_TAG).Count();
@@ -44,7 +44,7 @@ namespace Tetris.Logic
             if (countOfDescendants is null)
                 throw new ArgumentNullException($"{nameof(Document)} is null.");
 
-            return countOfDescendants;
+            return countOfDescendants.Value;
         }
 
         #endregion Public Methods
